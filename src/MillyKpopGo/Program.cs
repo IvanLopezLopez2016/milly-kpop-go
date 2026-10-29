@@ -1,3 +1,4 @@
+using MillyKpopGo.Pedidos;
 using MillyKpopGo.Articulos;
 using MillyKpopGo.Compradores;
 using System.Net;
@@ -120,6 +121,7 @@ app.MapPost("/logout", async (HttpContext ctx, IAntiforgery antiforgery) =>
 app.MapGet("/denegado", () => Results.Content(Page("Acceso denegado", "<h1>Acceso denegado</h1><p>Tu cuenta no tiene permisos para ver esta secciÃ³n.</p><a href='/'>Volver al inicio</a>"), "text/html; charset=utf-8"));
 app.MapCompradoresEndpoints();
 app.MapArticulosEndpoints();
+app.MapPedidosEndpoints();
 app.MapStaticAssets();
 app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 app.Run();

@@ -1,0 +1,8 @@
+.go-order-form{display:grid;gap:14px}
+.go-order-form label{display:grid;gap:5px}
+.go-order-form select,.go-order-form input,.go-order-form textarea{padding:10px;border:1px solid #cbd5e1;border-radius:8px;width:100%;box-sizing:border-box}
+.go-order-row{display:grid;grid-template-columns:minmax(180px,2fr) 90px 150px auto;gap:10px;align-items:end;padding:12px;background:#f8fafc;border-radius:10px;margin-bottom:8px}
+.go-order-row button{white-space:nowrap}
+@media(max-width:780px){.go-order-row{grid-template-columns:1fr 1fr}
+.go-order-row label:first-child{grid-column:1/-1}
+}
