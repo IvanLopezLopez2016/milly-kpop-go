@@ -1,0 +1,22 @@
+@page "/crear-cuenta"
+@rendermode InteractiveServer
+@using MudBlazor
+<PageTitle>Crear mi cuenta · MILLY K-POP GO</PageTitle>
+<MudContainer MaxWidth="MaxWidth.Small" Class="my-8">
+ <MudPaper Class="pa-6" Elevation="1">
+  <MudText Typo="Typo.h4" Color="Color.Primary">🌸 Crear mi cuenta</MudText>
+  <MudText Class="my-3">Solo para compradoras registradas por la administradora. Solicita tu código por WhatsApp.</MudText>
+  @if (Error=="registro") { <MudAlert Severity="Severity.Error">No se pudo activar la cuenta. Revisa tus datos o solicita otro código a la administradora. Si el correo ya tiene una cuenta, contacta a la administradora.</MudAlert> }
+  @if (Error=="clave") { <MudAlert Severity="Severity.Warning">Las contraseñas no coinciden.</MudAlert> }
+  @if (Error=="servidor") { <MudAlert Severity="Severity.Error">No se pudo contactar al servidor. Intenta más tarde.</MudAlert> }
+  <form method="post" action="/registro">
+   <input type="hidden" name="__RequestVerificationToken" value="@Token" />
+   <div class="my-3"><label>Correo registrado</label><input class="form-control" name="correo" type="email" autocomplete="email" required maxlength="254" /></div>
+   <div class="my-3"><label>Código que te compartieron</label><input class="form-control" name="codigo" required maxlength="70" autocomplete="off" /></div>
+   <div class="my-3"><label>Contraseña (mínimo 12 caracteres)</label><input class="form-control" name="password" type="password" minlength="12" maxlength="128" required autocomplete="new-password" /></div>
+   <div class="my-3"><label>Confirma tu contraseña</label><input class="form-control" name="confirmar" type="password" minlength="12" maxlength="128" required autocomplete="new-password" /></div>
+   <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled" FullWidth="true">Activar mi cuenta</MudButton>
+  </form>
+  <MudButton Href="/login" Variant="Variant.Text" Class="mt-3">Volver al inicio de sesión</MudButton>
+ </MudPaper>
+</MudContainer>

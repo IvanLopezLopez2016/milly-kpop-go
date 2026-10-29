@@ -1,0 +1,12 @@
+@inherits PedidosCajasBase
+@page "/admin/cajas"
+@rendermode InteractiveServer
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = "ADMIN")]
+@using MudBlazor
+<PageTitle>Cajas internacionales · Milly K-Pop GO</PageTitle>
+<MudThemeProvider /><MudPopoverProvider /><MudDialogProvider /><MudSnackbarProvider />
+<section class="go84"><div class="go84-head"><div><MudText Typo="Typo.overline" Color="Color.Primary">MILLY K-POP GO · ADMIN</MudText><MudText Typo="Typo.h4">Cajas internacionales</MudText><MudText Color="Color.Secondary">Organiza artículos por origen, caja y estado.</MudText></div><MudButton Href="/admin/cajas/nueva" Variant="Variant.Filled" Color="Color.Primary">Nueva caja</MudButton></div>
+@if(Error is not null) { <MudAlert Severity="Severity.Error">@Error</MudAlert> }
+else if(Loading) { <MudProgressLinear Indeterminate="true" /> }
+else { <MudPaper Class="pa-4" Elevation="0"><MudTextField @bind-Value="Busqueda" Immediate="true" Label="Código, descripción, origen o estado" Clearable="true" Variant="Variant.Outlined" Class="mb-3"/><MudTable Items="Filtrados" Dense="true" Hover="true" Breakpoint="Breakpoint.Sm"><HeaderContent><MudTh>Código</MudTh><MudTh>Origen</MudTh><MudTh>Estado</MudTh><MudTh>Artículos</MudTh><MudTh></MudTh></HeaderContent><RowTemplate><MudTd DataLabel="Código"><MudText Typo="Typo.subtitle2">@context.Codigo</MudText><MudText Typo="Typo.caption">@context.Descripcion</MudText></MudTd><MudTd DataLabel="Origen">@context.Origen</MudTd><MudTd DataLabel="Estado"><MudChip T="string" Size="Size.Small">@context.Estado</MudChip></MudTd><MudTd DataLabel="Artículos">@Cantidad(context.Id)</MudTd><MudTd><MudButton Href="@($"/admin/cajas/{context.Id:D}")" Color="Color.Primary" Size="Size.Small">Ver caja</MudButton></MudTd></RowTemplate><NoRecordsContent>Sin cajas para mostrar.</NoRecordsContent><PagerContent><MudTablePager PageSizeOptions="new int[] {10,20,50}" /></PagerContent></MudTable></MudPaper>}
+</section>

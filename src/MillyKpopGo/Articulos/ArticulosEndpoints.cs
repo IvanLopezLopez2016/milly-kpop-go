@@ -20,8 +20,8 @@ public static class ArticulosEndpoints
     {
         var group = endpoints.MapGroup("/admin/articulos")
             .RequireAuthorization(new AuthorizeAttribute { Roles = "ADMIN" });
-        group.MapGet("", Listar);
-        group.MapGet("/editar/{id:guid}", Editar);
+        // GET migrado a Components/Pages/Articulos.razor
+        // GET migrado a Components/Pages/ArticuloEditar.razor
         group.MapPost("/guardar", Guardar);
         group.MapPost("/estado", CambiarEstado);
         return endpoints;

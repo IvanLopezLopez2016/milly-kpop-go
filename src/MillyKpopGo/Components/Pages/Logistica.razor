@@ -1,0 +1,46 @@
+@page "/admin/logistica"
+@rendermode InteractiveServer
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = "ADMIN")]
+@using MudBlazor
+
+<PageTitle>Logística · Milly K-Pop GO</PageTitle>
+<MudThemeProvider />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<div class="milly-log-page">
+    <div class="milly-log-head">
+        <div><MudText Typo="Typo.overline" Color="Color.Primary">MILLY K-POP GO · ADMIN</MudText><MudText Typo="Typo.h4">EMS, aduanas y entregas</MudText><MudText Color="Color.Secondary">Gestiona cargos y seguimiento por artículo.</MudText></div>
+        <MudButton Href="/admin" Variant="Variant.Outlined" Color="Color.Primary">Volver al panel</MudButton>
+    </div>
+    @if (!string.IsNullOrEmpty(Error))
+    {
+        <MudAlert Severity="Severity.Error">@Error</MudAlert>
+    }
+    else if (Loading)
+    {
+        <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+    }
+    else
+    {
+        <MudPaper Class="pa-4 mb-4" Elevation="0">
+            <MudTextField @bind-Value="Busqueda" Label="Buscar comprador o artículo" Immediate="true" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" Clearable="true" />
+        </MudPaper>
+        <MudPaper Elevation="0" Class="milly-log-table">
+            <MudTable Items="Filtrados" Hover="true" Dense="true" Breakpoint="Breakpoint.Sm">
+                <HeaderContent><MudTh>Comprador</MudTh><MudTh>Artículo</MudTh><MudTh>Cantidad</MudTh><MudTh>Estado</MudTh><MudTh>Entrega</MudTh><MudTh></MudTh></HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Comprador">@context.Comprador</MudTd>
+                    <MudTd DataLabel="Artículo">@context.Articulo</MudTd>
+                    <MudTd DataLabel="Cantidad">@context.Cantidad</MudTd>
+                    <MudTd DataLabel="Estado">@EstadoTexto(context.Estado)</MudTd>
+                    <MudTd DataLabel="Entrega">@EntregaTexto(context.TipoEntrega)</MudTd>
+                    <MudTd><MudButton Href="@($"/admin/logistica/{context.Id:D}")" Color="Color.Primary" Variant="Variant.Text" Size="Size.Small">Administrar</MudButton></MudTd>
+                </RowTemplate>
+                <NoRecordsContent><MudText Class="pa-4">No hay resultados.</MudText></NoRecordsContent>
+                <PagerContent><MudTablePager PageSizeOptions="new int[] {10, 20, 50}" /></PagerContent>
+            </MudTable>
+        </MudPaper>
+    }
+</div>

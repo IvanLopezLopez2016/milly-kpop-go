@@ -1,0 +1,7 @@
+@page "/admin/cajas/nueva"
+@rendermode InteractiveServer
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = "ADMIN")]
+@using MudBlazor
+<PageTitle>Nueva caja · Milly K-Pop GO</PageTitle>
+<MudThemeProvider /><MudPopoverProvider /><MudDialogProvider /><MudSnackbarProvider />
+<section class="go84"><MudButton Href="/admin/cajas">Volver a cajas</MudButton><MudText Typo="Typo.h4" Class="mb-3">Nueva caja</MudText><MudPaper Class="pa-4" Elevation="0"><form method="post" action="/admin/cajas/guardar" class="go84-form"><input type="hidden" name="__RequestVerificationToken" value="@Token"/><label>Código único *<input name="codigo" maxlength="80" minlength="2" required placeholder="CAJA-07-COREA"/></label><label>Descripción<input name="descripcion" maxlength="250"/></label><label>Origen *<select name="origen" required><option value="COREA">Corea</option><option value="JAPON">Japón</option><option value="USA">Estados Unidos</option><option value="MEXICO">México</option><option value="OTRO">Otro</option></select></label><label>Notas internas<textarea name="notas" maxlength="1500" rows="3"></textarea></label><div class="go84-actions"><MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled">Crear caja</MudButton><MudButton Href="/admin/cajas" Variant="Variant.Outlined">Cancelar</MudButton></div></form></MudPaper></section>

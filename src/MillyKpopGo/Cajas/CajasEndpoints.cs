@@ -32,10 +32,10 @@ public static class CajasEndpoints
     public static IEndpointRouteBuilder MapCajasEndpoints(this IEndpointRouteBuilder app)
     {
         var g = app.MapGroup("/admin/cajas").RequireAuthorization(new AuthorizeAttribute { Roles = "ADMIN" });
-        g.MapGet("", Lista);
-        g.MapGet("/nueva", Nueva);
+        // GET migrado a componentes Razor en entrega 008.4
+        // GET migrado a componentes Razor en entrega 008.4
         g.MapPost("/guardar", Guardar).DisableAntiforgery();
-        g.MapGet("/{id:guid}", Detalle);
+        // GET migrado a componentes Razor en entrega 008.4
         g.MapPost("/{id:guid}/asignar", Asignar).DisableAntiforgery();
         g.MapPost("/{id:guid}/retirar", Retirar).DisableAntiforgery();
         g.MapPost("/{id:guid}/estado", CambiarEstado).DisableAntiforgery();

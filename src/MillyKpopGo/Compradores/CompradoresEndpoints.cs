@@ -23,8 +23,8 @@ public static class CompradoresEndpoints
         var group = endpoints.MapGroup("/admin/compradores")
             .RequireAuthorization(new AuthorizeAttribute { Roles = "ADMIN" });
 
-        group.MapGet("", Listar);
-        group.MapGet("/editar/{id:guid}", Editar);
+        // GET migrado a Components/Pages/Compradores.razor
+        // GET migrado a Components/Pages/CompradorEditar.razor
         group.MapPost("/guardar", Guardar);
         group.MapPost("/estado", CambiarEstado);
         return endpoints;

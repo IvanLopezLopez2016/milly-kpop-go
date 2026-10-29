@@ -1,0 +1,10 @@
+.milly-log-page{max-width:1240px;margin:0 auto;padding:clamp(16px,3vw,35px);color:#34263a}
+.milly-log-head{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:24px}
+.milly-log-table,.milly-log-page .mud-paper{border:1px solid #f2dbe7;border-radius:14px}
+.milly-log-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:0 0 16px}
+.milly-log-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:end}
+.milly-log-form label{display:flex;flex-direction:column;gap:6px;font-size:.9rem;font-weight:650}
+.milly-log-form select,.milly-log-form input,.milly-log-form textarea{width:100%;box-sizing:border-box;border-radius:8px;border:1px solid #d3c8d1;background:#fff;padding:11px;font:inherit;color:#34263a}
+.milly-log-wide{grid-column:1/-1}
+.milly-log-form button{justify-self:start}
+@media(max-width:650px){.milly-log-head{align-items:flex-start;flex-direction:column}.milly-log-stats,.milly-log-form{grid-template-columns:1fr}}

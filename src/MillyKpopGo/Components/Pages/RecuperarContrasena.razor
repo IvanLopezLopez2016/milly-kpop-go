@@ -1,0 +1,22 @@
+@page "/recuperar-contrasena"
+@rendermode InteractiveServer
+@using MudBlazor
+<PageTitle>Recuperar contraseña · Milly K-Pop GO</PageTitle>
+<MudThemeProvider /><MudPopoverProvider /><MudDialogProvider /><MudSnackbarProvider />
+<div class="go91-wrap"><MudPaper Class="go91-panel pa-6" Elevation="1">
+    <MudText Typo="Typo.overline" Color="Color.Primary">MILLY K-POP GO</MudText>
+    <MudText Typo="Typo.h5" Class="mb-3">Recuperar contraseña</MudText>
+    @if (Enviado)
+    {
+        <MudAlert Severity="Severity.Info" Class="mb-4">Si existe una cuenta asociada a ese correo, recibirás instrucciones para establecer una contraseña. Revisa también Spam.</MudAlert>
+        <MudButton Href="/login" Color="Color.Primary" FullWidth="true">Volver al acceso</MudButton>
+    }
+    else
+    {
+        <MudText Color="Color.Secondary" Class="mb-4">Escribe el correo con el que te invitaron.</MudText>
+        <MudTextField T="string" Label="Correo electrónico" InputType="InputType.Email" @bind-Value="Correo" Variant="Variant.Outlined" Class="mb-3" />
+        @if (Error is not null) { <MudAlert Severity="Severity.Error" Class="mb-3">@Error</MudAlert> }
+        <MudButton OnClick="EnviarAsync" Disabled="Procesando" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true">Enviar instrucciones</MudButton>
+        <MudButton Href="/login" Variant="Variant.Text" Color="Color.Secondary" FullWidth="true" Class="mt-2">Volver</MudButton>
+    }
+</MudPaper></div>

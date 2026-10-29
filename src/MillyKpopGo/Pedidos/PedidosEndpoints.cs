@@ -19,10 +19,10 @@ public static class PedidosEndpoints
     public static IEndpointRouteBuilder MapPedidosEndpoints(this IEndpointRouteBuilder app)
     {
         var g = app.MapGroup("/admin/pedidos").RequireAuthorization(new AuthorizeAttribute { Roles = "ADMIN" });
-        g.MapGet("", Lista);
-        g.MapGet("/nuevo", Nuevo);
+        // GET migrado a componentes Razor en entrega 008.4
+        // GET migrado a componentes Razor en entrega 008.4
         g.MapPost("/guardar", Guardar).DisableAntiforgery(); // validación explícita
-        g.MapGet("/{id:guid}", Detalle);
+        // GET migrado a componentes Razor en entrega 008.4
         return app;
     }
 

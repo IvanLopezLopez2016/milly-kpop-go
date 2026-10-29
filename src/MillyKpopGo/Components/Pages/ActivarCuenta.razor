@@ -1,0 +1,31 @@
+@page "/activar-cuenta"
+@rendermode InteractiveServer
+@using MudBlazor
+<PageTitle>Activar cuenta · Milly K-Pop GO</PageTitle>
+<MudThemeProvider /><MudPopoverProvider /><MudDialogProvider /><MudSnackbarProvider />
+<div class="go91-wrap"><MudPaper Class="go91-panel pa-6" Elevation="1">
+    <MudText Typo="Typo.overline" Color="Color.Primary">MILLY K-POP GO</MudText>
+    <MudText Typo="Typo.h5" Class="mb-2">@(Tipo == "recovery" ? "Restablecer contraseña" : "Activar cuenta")</MudText>
+    @if (Finalizado)
+    {
+        <MudAlert Severity="Severity.Success" Class="mb-4">Tu contraseña se guardó correctamente.</MudAlert>
+        <MudButton Href="/login" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true">Iniciar sesión</MudButton>
+    }
+    else if (!EnlaceValido)
+    {
+        <MudAlert Severity="Severity.Warning" Class="mb-4">El enlace no es válido o está incompleto. Solicita uno nuevo.</MudAlert>
+        <MudButton Href="/recuperar-contrasena" Color="Color.Primary" FullWidth="true">Solicitar enlace</MudButton>
+    }
+    else
+    {
+        <MudText Color="Color.Secondary" Class="mb-4">Escribe tu nueva contraseña. Debe contener al menos 12 caracteres.</MudText>
+        <MudTextField T="string" Label="Nueva contraseña" InputType="InputType.Password" Variant="Variant.Outlined" @bind-Value="Contrasena" Required="true" Class="mb-3" />
+        <MudTextField T="string" Label="Confirmar contraseña" InputType="InputType.Password" Variant="Variant.Outlined" @bind-Value="Confirmacion" Required="true" Class="mb-3" />
+        @if (!string.IsNullOrWhiteSpace(Error)) { <MudAlert Severity="Severity.Error" Class="mb-3">@Error</MudAlert> }
+        <MudButton OnClick="GuardarAsync" Disabled="Procesando" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true">
+          @if (Procesando) { <MudProgressCircular Indeterminate="true" Size="Size.Small" Class="mr-2" /> }
+          Guardar contraseña
+        </MudButton>
+        <MudButton Href="/recuperar-contrasena" Variant="Variant.Text" Color="Color.Secondary" FullWidth="true" Class="mt-2">Solicitar nuevo enlace</MudButton>
+    }
+</MudPaper></div>

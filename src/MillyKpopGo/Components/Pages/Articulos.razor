@@ -1,0 +1,46 @@
+@page "/admin/articulos"
+@rendermode InteractiveServer
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = "ADMIN")]
+@using MudBlazor
+
+<PageTitle>Artículos · Milly K-Pop GO</PageTitle>
+<MudThemeProvider /><MudPopoverProvider /><MudDialogProvider /><MudSnackbarProvider />
+<div class="milly-catalog-page">
+    <div class="milly-catalog-head"><div><MudText Typo="Typo.overline" Color="Color.Primary">MILLY K-POP GO · ADMIN</MudText><MudText Typo="Typo.h4">Catálogo de artículos</MudText><MudText Color="Color.Secondary">Registra cada artículo una vez; el precio definitivo se asigna por pedido.</MudText></div><MudButton Href="/admin" Variant="Variant.Outlined">Volver al panel</MudButton></div>
+    @if (Error != null) { <MudAlert Severity="Severity.Error">@Error</MudAlert> }
+    else if (Cargando) { <MudProgressLinear Indeterminate="true" /> }
+    else
+    {
+        <div class="milly-catalog-columns">
+            <MudPaper Class="pa-4" Elevation="0">
+                <MudText Typo="Typo.h6" Class="mb-3">Nuevo artículo</MudText>
+                <form action="/admin/articulos/guardar" method="post" class="milly-catalog-form">
+                    <input type="hidden" name="__RequestVerificationToken" value="@Token" />
+                    <label>Nombre del artículo *<input name="nombre" required minlength="2" maxlength="200" /></label>
+                    <label>SKU interno<input name="sku" maxlength="100" /></label>
+                    <label>Código de barras<input name="codigo_barras" maxlength="150" /></label>
+                    <label>Grupo / artista<input name="grupo" maxlength="120" /></label>
+                    <label>Variante<input name="variante" maxlength="160" /></label>
+                    <label>Precio de referencia MXN<input type="number" name="precio_referencia" min="0" step="0.01" /></label>
+                    <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled">Registrar artículo</MudButton>
+                </form>
+            </MudPaper>
+            <MudPaper Class="pa-4" Elevation="0">
+                <MudText Typo="Typo.h6">Registrados (@Registros.Count)</MudText>
+                <MudTextField @bind-Value="Busqueda" Label="Buscar por nombre, SKU, código o grupo" Variant="Variant.Outlined" Immediate="true" Clearable="true" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" Class="my-3" />
+                <MudTable Items="Filtrados" Dense="true" Hover="true" Breakpoint="Breakpoint.Sm">
+                    <HeaderContent><MudTh>Artículo</MudTh><MudTh>SKU</MudTh><MudTh>Precio ref.</MudTh><MudTh>Estado</MudTh><MudTh></MudTh></HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Artículo">@context.Nombre <MudText Typo="Typo.caption">@context.Grupo · @context.Variante</MudText></MudTd>
+                        <MudTd DataLabel="SKU">@context.Sku <MudText Typo="Typo.caption">@context.CodigoBarras</MudText></MudTd>
+                        <MudTd DataLabel="Precio ref.">@(context.PrecioReferencia?.ToString("C2", System.Globalization.CultureInfo.GetCultureInfo("es-MX")) ?? "Sin definir")</MudTd>
+                        <MudTd DataLabel="Estado"><MudChip T="string" Size="Size.Small" Color="@(context.Activo ? Color.Success : Color.Default)">@(context.Activo ? "Activo" : "Inactivo")</MudChip></MudTd>
+                        <MudTd><MudButton Size="Size.Small" Href="@($"/admin/articulos/editar/{context.Id:D}")" Color="Color.Primary" Variant="Variant.Text">Editar</MudButton></MudTd>
+                    </RowTemplate>
+                    <NoRecordsContent><MudText Class="pa-3">No hay artículos para mostrar.</MudText></NoRecordsContent>
+                    <PagerContent><MudTablePager PageSizeOptions="new int[] {10,20,50}" /></PagerContent>
+                </MudTable>
+            </MudPaper>
+        </div>
+    }
+</div>

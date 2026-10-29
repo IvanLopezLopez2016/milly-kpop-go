@@ -1,0 +1,71 @@
+@page "/admin/logistica/{Id:guid}"
+@rendermode InteractiveServer
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = "ADMIN")]
+@using MudBlazor
+
+<PageTitle>Detalle de logística · Milly K-Pop GO</PageTitle>
+<MudThemeProvider /><MudPopoverProvider /><MudDialogProvider /><MudSnackbarProvider />
+<div class="milly-log-page">
+    <div class="milly-log-head">
+        <div><MudText Typo="Typo.overline" Color="Color.Primary">MILLY K-POP GO · LOGÍSTICA</MudText><MudText Typo="Typo.h4">@Registro?.Articulo</MudText><MudText Color="Color.Secondary">@Registro?.Comprador · @Registro?.Cantidad pieza(s)</MudText></div>
+        <MudButton Href="/admin/logistica" Variant="Variant.Outlined" Color="Color.Primary">Volver</MudButton>
+    </div>
+    @if (!string.IsNullOrEmpty(Error))
+    {
+        <MudAlert Severity="Severity.Error">@Error</MudAlert>
+    }
+    else if (Loading)
+    {
+        <MudProgressLinear Indeterminate="true" />
+    }
+    else if (Registro is not null)
+    {
+        <div class="milly-log-stats">
+            <MudPaper Class="pa-4"><MudText Color="Color.Secondary">Precio de artículos</MudText><MudText Typo="Typo.h5">@Dinero(Registro.Cantidad * Registro.PrecioUnitario)</MudText></MudPaper>
+            <MudPaper Class="pa-4"><MudText Color="Color.Secondary">Cargos adicionales</MudText><MudText Typo="Typo.h5">@Dinero(Cargos.Sum(x => x.Monto))</MudText></MudPaper>
+        </div>
+        <MudPaper Class="pa-4 mb-4" Elevation="0">
+            <MudText Typo="Typo.h6" Class="mb-3">Registrar cargo adicional</MudText>
+            @if (Registro.Finalizado)
+            {
+                <MudAlert Severity="Severity.Warning">El artículo está finalizado y no admite cargos nuevos.</MudAlert>
+            }
+            else
+            {
+                <form action="@($"/admin/logistica/{Id:D}/cargo")" method="post" class="milly-log-form">
+                    <input type="hidden" name="__RequestVerificationToken" value="@Token" />
+                    <label>Tipo de cargo<select name="tipo" required>@foreach (var item in TiposCargo) { <option value="@item.Key">@item.Value</option> }</select></label>
+                    <label>Monto MXN<input type="number" name="monto" min="0.01" max="99999999.99" step="0.01" required /></label>
+                    <label>Descripción<input type="text" name="descripcion" maxlength="500" /></label>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">Registrar cargo</MudButton>
+                </form>
+            }
+            <MudText Typo="Typo.subtitle1" Class="mt-4 mb-2">Cargos registrados</MudText>
+            <MudTable Items="Cargos" Dense="true" Hover="true" Breakpoint="Breakpoint.Sm">
+                <HeaderContent><MudTh>Tipo</MudTh><MudTh>Importe</MudTh><MudTh>Descripción</MudTh></HeaderContent>
+                <RowTemplate><MudTd DataLabel="Tipo">@context.Tipo</MudTd><MudTd DataLabel="Importe">@Dinero(context.Monto)</MudTd><MudTd DataLabel="Descripción">@context.Descripcion</MudTd></RowTemplate>
+                <NoRecordsContent><MudText Class="pa-3">Aún no hay cargos.</MudText></NoRecordsContent>
+            </MudTable>
+            <MudText Class="mt-3">Los cargos se liquidan desde <MudLink Href="@($"/admin/pagos/{Registro.CompradorId:D}")">Pagos y saldos</MudLink>.</MudText>
+        </MudPaper>
+        <MudPaper Class="pa-4" Elevation="0">
+            <MudText Typo="Typo.h6" Class="mb-3">Seguimiento y entrega</MudText>
+            @if (Registro.Finalizado)
+            {
+                <MudAlert Severity="Severity.Info">El artículo está finalizado; requiere proceso auditado para ajustes posteriores.</MudAlert>
+            }
+            else
+            {
+                <form action="@($"/admin/logistica/{Id:D}/entrega")" method="post" class="milly-log-form">
+                    <input type="hidden" name="__RequestVerificationToken" value="@Token" />
+                    <label>Modalidad<select name="tipo_entrega"><option value="">Sin definir</option>@foreach (var option in TiposEntrega) { <option value="@option.Key" selected="@(option.Key == Registro.TipoEntrega)">@option.Value</option> }</select></label>
+                    <label>Estado<select name="estado">@foreach (var option in Estados) { <option value="@option.Key" selected="@(option.Key == Registro.Estado)">@option.Value</option> }</select></label>
+                    <label>Fecha límite<input type="date" name="fecha_limite" value="@(Registro.FechaLimite?.ToString("yyyy-MM-dd"))" /></label>
+                    <label class="milly-log-wide">Nota visible al cliente<textarea name="nota_publica" maxlength="800" rows="3">@Registro.NotaPublica</textarea></label>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">Guardar seguimiento</MudButton>
+                </form>
+                <MudText Typo="Typo.caption" Class="mt-3">Para marcar Entregado/completado, todos los conceptos de este artículo deben estar pagados.</MudText>
+            }
+        </MudPaper>
+    }
+</div>

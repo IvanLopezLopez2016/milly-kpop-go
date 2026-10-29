@@ -1,0 +1,26 @@
+@page "/admin/compradores/codigo/{Id:guid}"
+@rendermode InteractiveServer
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles="ADMIN")]
+@using MudBlazor
+<PageTitle>Código de acceso · MILLY K-POP GO</PageTitle>
+<MudContainer MaxWidth="MaxWidth.Small" Class="my-8">
+<MudButton Href="/admin/compradores" Variant="Variant.Text">← Volver</MudButton>
+<MudText Typo="Typo.h4" Class="my-4">Generar código de acceso</MudText>
+@if(Error is not null){<MudAlert Severity="Severity.Error">@Error</MudAlert>}
+else if(Cargando){<MudProgressLinear Indeterminate="true"/>}
+else if(Comprador is not null){
+ <MudPaper Class="pa-5" Elevation="1">
+ <MudText Typo="Typo.h6">@Comprador.Nombre</MudText>
+ <MudText Class="my-2">@Comprador.Correo</MudText>
+ @if(Comprador.AuthUserId.HasValue){<MudAlert Severity="Severity.Info">Esta compradora ya tiene acceso. No necesita otro código.</MudAlert>}
+ else if(!Comprador.Activo){<MudAlert Severity="Severity.Warning">Compradora inactiva.</MudAlert>}
+ else if(string.IsNullOrWhiteSpace(Comprador.Correo)){<MudAlert Severity="Severity.Warning">Primero registra un correo.</MudAlert>}
+ else {
+ <MudAlert Severity="Severity.Info" Class="my-3">El código durará 48 horas y funcionará una sola vez. Generar otro código invalida el anterior. Cópielo y envíelo por WhatsApp.</MudAlert>
+ <form action="/admin/compradores/codigo/generar" method="post">
+  <input type="hidden" name="__RequestVerificationToken" value="@Token"/>
+  <input type="hidden" name="id" value="@Id.ToString("D")"/>
+  <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled">Generar código</MudButton>
+ </form>}
+ </MudPaper>}
+</MudContainer>

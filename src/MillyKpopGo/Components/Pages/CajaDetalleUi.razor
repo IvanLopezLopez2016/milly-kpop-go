@@ -1,0 +1,18 @@
+@inherits PedidosCajasBase
+@page "/admin/cajas/{Id:guid}"
+@rendermode InteractiveServer
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = "ADMIN")]
+@using MudBlazor
+<PageTitle>Detalle de caja · Milly K-Pop GO</PageTitle>
+<MudThemeProvider /><MudPopoverProvider /><MudDialogProvider /><MudSnackbarProvider />
+<section class="go84"><MudButton Href="/admin/cajas">Volver a cajas</MudButton>
+@if(Error is not null) { <MudAlert Severity="Severity.Error">@Error</MudAlert> }
+else if(Loading) { <MudProgressLinear Indeterminate="true" /> }
+else if(Caja is null) { <MudAlert Severity="Severity.Warning">No se encontró la caja solicitada.</MudAlert> }
+else { <MudText Typo="Typo.h4" Class="mb-2">@Caja.Codigo</MudText><MudText Color="Color.Secondary" Class="mb-4">@Caja.Origen · @Caja.Descripcion</MudText>
+<MudPaper Class="pa-4 mb-4" Elevation="0"><MudText Typo="Typo.h6" Class="mb-2">Seguimiento</MudText><form method="post" action="@($"/admin/cajas/{Id:D}/estado")" class="go84-form"><input type="hidden" name="__RequestVerificationToken" value="@Token" /><label>Estado<select name="estado" @bind="EstadoSeleccionado">@foreach(var e in Estados){ <option value="@e.Key">@e.Text</option> }</select></label><label class="go84-check"><input type="checkbox" name="actualizar_articulos" value="true" @bind="ActualizarArticulos" /> Actualizar también los artículos de esta caja (sin cambiar entregados, cancelados, stock o multa)</label><MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled">Guardar estado</MudButton></form></MudPaper>
+<MudPaper Class="pa-4 mb-4" Elevation="0"><MudText Typo="Typo.h6">Artículos asignados (@Asignados.Count())</MudText><MudTable Items="Asignados" Dense="true" Hover="true"><HeaderContent><MudTh>Comprador · artículo</MudTh><MudTh>Importe</MudTh><MudTh>Estado</MudTh><MudTh></MudTh></HeaderContent><RowTemplate><MudTd DataLabel="Artículo">@View.Etiqueta(context)</MudTd><MudTd DataLabel="Importe">@Money(context.Cantidad * context.PrecioUnitario)</MudTd><MudTd DataLabel="Estado">@context.Estado</MudTd><MudTd>@if(context.Estado != "ENTREGADO_COMPLETADO") { <MudButton OnClick="@(()=>SolicitarRetiro(context.Id))" Variant="Variant.Outlined" Size="Size.Small" Color="Color.Error">Retirar</MudButton> }</MudTd></RowTemplate><NoRecordsContent>Esta caja todavía no tiene artículos.</NoRecordsContent></MudTable>
+@if(ConfirmarRetiro){ <MudAlert Severity="Severity.Warning" Class="mt-3">¿Confirmas que quieres retirar este artículo de la caja?</MudAlert><form method="post" action="@($"/admin/cajas/{Id:D}/retirar")" class="go84-actions"><input type="hidden" name="__RequestVerificationToken" value="@Token" /><input type="hidden" name="detalle_id" value="@PendienteRetirar" /><MudButton ButtonType="ButtonType.Submit" Color="Color.Error" Variant="Variant.Filled">Confirmar retiro</MudButton><MudButton OnClick="CancelarRetiro" Variant="Variant.Outlined">Cancelar</MudButton></form>}
+</MudPaper><MudPaper Class="pa-4" Elevation="0"><MudText Typo="Typo.h6" Class="mb-2">Asignar artículo pendiente</MudText><form method="post" action="@($"/admin/cajas/{Id:D}/asignar")" class="go84-form"><input type="hidden" name="__RequestVerificationToken" value="@Token" /><label>Artículo<select name="detalle_id" required><option value="">Seleccionar artículo</option>@foreach(var d in Disponibles) { <option value="@d.Id">@View.Etiqueta(d) · @Money(d.PrecioUnitario) c/u</option> }</select></label><MudButton ButtonType="ButtonType.Submit" Disabled="@(!Disponibles.Any())" Variant="Variant.Filled" Color="Color.Primary">Asignar artículo</MudButton></form></MudPaper>
+}
+</section>

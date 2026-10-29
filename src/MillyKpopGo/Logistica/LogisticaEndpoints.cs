@@ -37,8 +37,8 @@ public static class LogisticaEndpoints
     public static IEndpointRouteBuilder MapLogisticaEndpoints(this IEndpointRouteBuilder app)
     {
         var group = app.MapGroup("/admin/logistica").RequireAuthorization(new AuthorizeAttribute { Roles = "ADMIN" });
-        group.MapGet("", List);
-        group.MapGet("/{id:guid}", Detail);
+        // GET sustituido por Components/Pages/Logistica.razor
+        // GET detalle sustituido por Components/Pages/LogisticaDetalle.razor
         group.MapPost("/{id:guid}/cargo", AddCharge).DisableAntiforgery();
         group.MapPost("/{id:guid}/entrega", UpdateDelivery).DisableAntiforgery();
         return app;

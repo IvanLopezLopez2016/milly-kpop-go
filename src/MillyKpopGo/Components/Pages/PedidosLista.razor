@@ -1,0 +1,12 @@
+@inherits PedidosCajasBase
+@page "/admin/pedidos"
+@rendermode InteractiveServer
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = "ADMIN")]
+@using MudBlazor
+<PageTitle>Pedidos · Milly K-Pop GO</PageTitle>
+<MudThemeProvider /><MudPopoverProvider /><MudDialogProvider /><MudSnackbarProvider />
+<section class="go84"><div class="go84-head"><div><MudText Typo="Typo.overline" Color="Color.Primary">MILLY K-POP GO · ADMIN</MudText><MudText Typo="Typo.h4">Pedidos</MudText><MudText Color="Color.Secondary">Consulta las compras y sus importes registrados.</MudText></div><MudButton Href="/admin/pedidos/nuevo" Variant="Variant.Filled" Color="Color.Primary">Nuevo pedido</MudButton></div>
+@if(Error is not null) { <MudAlert Severity="Severity.Error">@Error</MudAlert> }
+else if(Loading) { <MudProgressLinear Indeterminate="true" /> }
+else { <MudPaper Class="pa-4" Elevation="0"><MudTextField @bind-Value="Busqueda" Label="Buscar comprador o ID" Immediate="true" Clearable="true" Variant="Variant.Outlined" Class="mb-3" /><MudTable Items="Filtrados" Dense="true" Hover="true" Breakpoint="Breakpoint.Sm"><HeaderContent><MudTh>Comprador</MudTh><MudTh>Fecha</MudTh><MudTh>Renglones</MudTh><MudTh>Total</MudTh><MudTh></MudTh></HeaderContent><RowTemplate><MudTd DataLabel="Comprador">@View.Comprador(context.CompradorId)</MudTd><MudTd DataLabel="Fecha">@context.Fecha.ToLocalTime().ToString("dd/MM/yyyy")</MudTd><MudTd DataLabel="Renglones">@Articulos(context.Id)</MudTd><MudTd DataLabel="Total">@Money(Total(context.Id))</MudTd><MudTd><MudButton Href="@($"/admin/pedidos/{context.Id:D}")" Color="Color.Primary" Size="Size.Small">Ver detalle</MudButton></MudTd></RowTemplate><NoRecordsContent>Sin pedidos para mostrar.</NoRecordsContent><PagerContent><MudTablePager PageSizeOptions="new int[]{10,20,50}" /></PagerContent></MudTable></MudPaper>}
+</section>

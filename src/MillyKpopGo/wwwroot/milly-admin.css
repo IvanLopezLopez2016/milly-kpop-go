@@ -1,0 +1,15 @@
+.milly-admin{max-width:1280px;margin:0 auto;padding:clamp(16px,3vw,36px);font-family:inherit;color:#322333}
+.milly-admin-header{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:24px}
+.milly-eyebrow{font-weight:800;letter-spacing:.14em;color:#be185d;font-size:.72rem;margin:0 0 7px}
+.milly-admin h1{margin:0;font-size:clamp(1.65rem,3vw,2.15rem);line-height:1.15}
+.milly-subtitle{color:#756476;margin:10px 0 0}
+.milly-actions{display:flex;align-items:center;flex-wrap:wrap;gap:12px}
+.milly-module-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.milly-module{border:1px solid #f3dce8!important;border-radius:16px!important;background:#fff!important;padding:21px;display:flex;flex-direction:column;align-items:flex-start;gap:12px;min-height:205px}
+.milly-module h2{font-size:1.13rem;margin:0;font-weight:700}
+.milly-module p{font-size:.9rem;color:#796b78;margin:0 0 auto}
+.milly-demo{margin-top:24px;border:1px solid #f3dce8!important;border-radius:16px!important;padding:20px}
+.milly-demo h2{font-size:1.08rem;font-weight:700;margin:0 0 8px}
+.milly-demo p{color:#796b78;margin:0 0 16px}
+@media(max-width:960px){.milly-module-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.milly-module-grid{grid-template-columns:1fr}.milly-admin-header{flex-direction:column}.milly-module{min-height:170px}}

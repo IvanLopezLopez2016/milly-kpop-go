@@ -1,0 +1,44 @@
+@page "/admin/compradores"
+@rendermode InteractiveServer
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = "ADMIN")]
+@using MudBlazor
+
+<PageTitle>Compradores · Milly K-Pop GO</PageTitle>
+<MudThemeProvider /><MudPopoverProvider /><MudDialogProvider /><MudSnackbarProvider />
+<div class="milly-catalog-page">
+    <div class="milly-catalog-head"><div><MudText Typo="Typo.overline" Color="Color.Primary">MILLY K-POP GO · ADMIN</MudText><MudText Typo="Typo.h4">Compradores</MudText><MudText Color="Color.Secondary">Registra y administra tus compradores.</MudText></div><MudButton Href="/admin" Variant="Variant.Outlined">Volver al panel</MudButton></div>
+    @if (Error != null) { <MudAlert Severity="Severity.Error">@Error</MudAlert> }
+    else if (Cargando) { <MudProgressLinear Indeterminate="true" /> }
+    else
+    {
+        <div class="milly-catalog-columns">
+            <MudPaper Class="pa-4" Elevation="0">
+                <MudText Typo="Typo.h6" Class="mb-3">Nuevo comprador</MudText>
+                <form action="/admin/compradores/guardar" method="post" class="milly-catalog-form">
+                    <input type="hidden" name="__RequestVerificationToken" value="@Token" />
+                    <label>Nombre completo *<input name="nombre" required minlength="2" maxlength="160" /></label>
+                    <label>Alias<input name="alias" maxlength="100" /></label>
+                    <label>Correo<input type="email" name="correo" maxlength="254" /></label>
+                    <label>WhatsApp<input type="tel" name="whatsapp" maxlength="40" /></label>
+                    <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled">Registrar comprador</MudButton>
+                </form>
+            </MudPaper>
+            <MudPaper Class="pa-4" Elevation="0">
+                <MudText Typo="Typo.h6">Registrados (@Registros.Count)</MudText>
+                <MudTextField @bind-Value="Busqueda" Label="Buscar por nombre, alias, correo o WhatsApp" Variant="Variant.Outlined" Immediate="true" Clearable="true" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" Class="my-3" />
+                <MudTable Items="Filtrados" Dense="true" Hover="true" Breakpoint="Breakpoint.Sm">
+                    <HeaderContent><MudTh>Comprador</MudTh><MudTh>Contacto</MudTh><MudTh>Portal</MudTh><MudTh>Estado</MudTh><MudTh></MudTh></HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Comprador">@context.Nombre <MudText Typo="Typo.caption">@context.Alias</MudText></MudTd>
+                        <MudTd DataLabel="Contacto">@context.Correo <MudText Typo="Typo.caption">@context.Whatsapp</MudText></MudTd>
+                        <MudTd DataLabel="Portal">@(context.AuthUserId.HasValue ? "Vinculado" : "Sin acceso")</MudTd>
+                        <MudTd DataLabel="Estado"><MudChip T="string" Size="Size.Small" Color="@(context.Activo ? Color.Success : Color.Default)">@(context.Activo ? "Activo" : "Inactivo")</MudChip></MudTd>
+                        <MudTd><MudButton Size="Size.Small" Href="@($"/admin/compradores/editar/{context.Id:D}")" Variant="Variant.Text" Color="Color.Primary">Editar</MudButton></MudTd>
+                    </RowTemplate>
+                    <NoRecordsContent><MudText Class="pa-3">No hay compradores para mostrar.</MudText></NoRecordsContent>
+                    <PagerContent><MudTablePager PageSizeOptions="new int[] {10,20,50}" /></PagerContent>
+                </MudTable>
+            </MudPaper>
+        </div>
+    }
+</div>

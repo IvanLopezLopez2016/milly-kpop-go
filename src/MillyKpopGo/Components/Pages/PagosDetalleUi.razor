@@ -1,0 +1,60 @@
+@page "/admin/pagos/{Id:guid}"
+@rendermode InteractiveServer
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = "ADMIN")]
+@using MudBlazor
+@using MillyKpopGo.Pagos
+<PageTitle>Detalle de pagos · Milly K-Pop GO</PageTitle>
+<MudThemeProvider /><MudPopoverProvider /><MudDialogProvider /><MudSnackbarProvider />
+<section class="go85">
+ <MudButton Href="/admin/pagos" Variant="Variant.Text">Volver a compradores</MudButton>
+ @if(Error is not null) { <MudAlert Severity="Severity.Error">@Error</MudAlert> }
+ else if(Loading) { <MudProgressLinear Indeterminate="true" /> }
+ else if(Vista.Compradores.Count==0) { <MudAlert Severity="Severity.Warning">No se encontró el comprador.</MudAlert> }
+ else {
+  <MudText Typo="Typo.h4" Class="mb-3">Pagos de @Nombre</MudText>
+  <div class="go85-stats">
+   <MudPaper Class="pa-4" Elevation="0"><MudText Color="Color.Secondary">Artículos + cargos</MudText><MudText Typo="Typo.h5">@Dinero(Vista.TotalProductos+Vista.TotalCargos)</MudText></MudPaper>
+   <MudPaper Class="pa-4" Elevation="0"><MudText Color="Color.Secondary">Pagos recibidos</MudText><MudText Typo="Typo.h5">@Dinero(Vista.TotalRecibido)</MudText></MudPaper>
+   <MudPaper Class="pa-4" Elevation="0"><MudText Color="Color.Secondary">Saldo a favor sin aplicar</MudText><MudText Typo="Typo.h5" Color="Color.Success">@Dinero(Vista.SaldoFavor)</MudText></MudPaper>
+   <MudPaper Class="pa-4" Elevation="0"><MudText Color="Color.Secondary">Pendiente neto</MudText><MudText Typo="Typo.h5">@Dinero(Vista.PendienteNeto)</MudText></MudPaper>
+  </div>
+  <MudAlert Severity="Severity.Info" Class="mb-4">Pendiente por distribuir: @Dinero(Vista.PendienteAsignar). Los saldos sin aplicar no descuentan un artículo específico hasta que se asignan. No incluye cargos futuros.</MudAlert>
+  <div class="go85-grid">
+   <MudPaper Class="pa-4" Elevation="0">
+    <MudText Typo="Typo.h6" Class="mb-3">Registrar nuevo abono</MudText>
+    <form method="post" action="/admin/pagos/registrar" class="go85-form">
+      <input type="hidden" name="__RequestVerificationToken" value="@Token" />
+      <input type="hidden" name="comprador_id" value="@Id" />
+      <label>Monto (MXN)<input name="monto" type="number" step="0.01" min="0.01" required /></label>
+      <label>Fecha<input name="fecha" type="date" value="@FechaHoy" required /></label>
+      <label>Método<select name="metodo"><option>Transferencia</option><option>Efectivo</option><option>Mercado Pago</option><option>Otro</option></select></label>
+      <label>Referencia<input name="referencia" maxlength="180" /></label>
+      <label>Nota interna<input name="nota" maxlength="1000" /></label>
+      <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled">Registrar abono</MudButton>
+    </form>
+   </MudPaper>
+   <MudPaper Class="pa-4" Elevation="0">
+    <MudText Typo="Typo.h6" Class="mb-3">Aplicar abono</MudText>
+    @if(Vista.Disponibles.Count==0 || (Vista.DetallesPendientes.Count==0 && Vista.CargosPendientes.Count==0))
+    { <MudAlert Severity="Severity.Info">No hay abonos disponibles o conceptos pendientes para aplicar.</MudAlert> }
+    else {
+     <form method="post" action="@($"/admin/pagos/{Id:D}/aplicar")" class="go85-form">
+      <input type="hidden" name="__RequestVerificationToken" value="@Token" />
+      <label>Abono disponible<select name="pago_id" required>@foreach(var p in Vista.Disponibles){<option value="@p.Id">@p.Fecha.ToString("dd/MM/yyyy") · @Dinero(Vista.Disponible(p)) disponibles</option>}</select></label>
+      <label>Concepto<select name="destino" required>@foreach(var d in Vista.DetallesPendientes){<option value="@($"detalle:{d.Id:D}")">@Vista.NombreArticulo(d.ArticuloId) · @Dinero(Vista.PendienteDetalle(d)) pendientes</option>}@foreach(var c in Vista.CargosPendientes){<option value="@($"cargo:{c.Id:D}")">@c.Tipo · @Dinero(Vista.PendienteCargo(c)) pendientes</option>}</select></label>
+      <label>Importe (MXN)<input name="monto" type="number" step="0.01" min="0.01" required /></label>
+      <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled">Aplicar pago</MudButton>
+     </form>
+    }
+   </MudPaper>
+  </div>
+  <MudPaper Class="pa-4 mb-4" Elevation="0"><MudText Typo="Typo.h6" Class="mb-3">Historial de abonos</MudText>
+   <MudTable Items="Vista.Pagos" Dense="true" Hover="true"><HeaderContent><MudTh>Fecha</MudTh><MudTh>Monto</MudTh><MudTh>Aplicado</MudTh><MudTh>A favor</MudTh><MudTh>Método</MudTh></HeaderContent><RowTemplate><MudTd DataLabel="Fecha">@context.Fecha.ToString("dd/MM/yyyy")</MudTd><MudTd DataLabel="Monto">@Dinero(context.Monto)</MudTd><MudTd DataLabel="Aplicado">@Dinero(Vista.AplicadoPago(context.Id))</MudTd><MudTd DataLabel="A favor">@Dinero(Vista.Disponible(context))</MudTd><MudTd DataLabel="Método">@context.Metodo</MudTd></RowTemplate><NoRecordsContent>Sin pagos registrados.</NoRecordsContent><PagerContent><MudTablePager PageSizeOptions="new int[] {10,20,50}" /></PagerContent></MudTable>
+  </MudPaper>
+  <MudPaper Class="pa-4" Elevation="0"><MudText Typo="Typo.h6" Class="mb-3">Conceptos del comprador</MudText>
+   <MudTable Items="DetallesVisibles" Dense="true" Hover="true"><HeaderContent><MudTh>Artículo</MudTh><MudTh>Importe</MudTh><MudTh>Aplicado</MudTh><MudTh>Pendiente</MudTh></HeaderContent><RowTemplate><MudTd DataLabel="Artículo">@Vista.NombreArticulo(context.ArticuloId)</MudTd><MudTd DataLabel="Importe">@Dinero(context.Cantidad*context.PrecioUnitario)</MudTd><MudTd DataLabel="Aplicado">@Dinero(Vista.AplicadoDetalle(context.Id))</MudTd><MudTd DataLabel="Pendiente">@Dinero(Vista.PendienteDetalle(context))</MudTd></RowTemplate><NoRecordsContent>Sin artículos.</NoRecordsContent></MudTable>
+   <MudText Typo="Typo.subtitle1" Class="mt-4 mb-2">Cargos adicionales</MudText>
+   <MudTable Items="Vista.Cargos" Dense="true" Hover="true"><HeaderContent><MudTh>Tipo</MudTh><MudTh>Importe</MudTh><MudTh>Aplicado</MudTh><MudTh>Pendiente</MudTh></HeaderContent><RowTemplate><MudTd DataLabel="Cargo">@context.Tipo</MudTd><MudTd DataLabel="Importe">@Dinero(context.Monto)</MudTd><MudTd DataLabel="Aplicado">@Dinero(Vista.AplicadoCargo(context.Id))</MudTd><MudTd DataLabel="Pendiente">@Dinero(Vista.PendienteCargo(context))</MudTd></RowTemplate><NoRecordsContent>Sin cargos.</NoRecordsContent></MudTable>
+  </MudPaper>
+ }
+</section>

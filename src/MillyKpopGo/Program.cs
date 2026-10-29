@@ -1,3 +1,6 @@
+using MillyKpopGo.Acceso;
+using System.Threading.RateLimiting;
+using MudBlazor.Services;
 using MillyKpopGo.Logistica;
 using MillyKpopGo.Pagos;
 using MillyKpopGo.Cajas;
@@ -30,7 +33,23 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.SlidingExpiration = false;
     });
 builder.Services.AddHttpClient();
+builder.Services.AddScoped<CodigosAccesoService>();
+builder.Services.AddRateLimiter(options => {
+    options.AddPolicy("registro", ctx => RateLimitPartition.GetFixedWindowLimiter(
+        ctx.Connection.RemoteIpAddress?.ToString() ?? "unknown", _ => new FixedWindowRateLimiterOptions {
+            PermitLimit=5, Window=TimeSpan.FromMinutes(15), QueueLimit=0, AutoReplenishment=true
+        }));
+    options.RejectionStatusCode=429;
+});
+builder.Services.AddMudServices();
+builder.Services.AddScoped<MillyKpopGo.Portal.PortalClienteService>();
+builder.Services.AddScoped<MillyKpopGo.Pagos.PagosUiService>();
+builder.Services.AddScoped<MillyKpopGo.Pedidos.PedidosCajasUiService>();
+builder.Services.AddScoped<MillyKpopGo.Catalogos.CatalogosUiService>();
+builder.Services.AddScoped<MillyKpopGo.Logistica.LogisticaUiService>();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<SupabaseLoginService>();
+builder.Services.AddScoped<MillyKpopGo.Auth.ActivacionCuentaService>();
 
 var app = builder.Build();
 if (!app.Environment.IsDevelopment())
@@ -39,8 +58,10 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 app.UseHttpsRedirection();
+app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();
 app.UseAntiforgery();
 
 static string Page(string title, string body) => $$"""
@@ -54,7 +75,7 @@ app.MapGet("/login", (HttpContext ctx, IAntiforgery antiforgery) =>
     if (ctx.User.Identity?.IsAuthenticated == true) return Results.Redirect(ctx.User.IsInRole("ADMIN") ? "/admin" : "/mi-cuenta");
     var token = antiforgery.GetAndStoreTokens(ctx).RequestToken!;
     var warning = ctx.Request.Query.ContainsKey("error") ? "<p role='alert'>No fue posible iniciar sesiÃ³n. Verifica tus credenciales y permisos.</p>" : "";
-    var html = Page("Acceso", $"<h1>ðŸŒ¸ Milly K-Pop GO</h1><p>Acceso exclusivo por invitaciÃ³n.</p>{warning}<form method='post' action='/login'><input type='hidden' name='__RequestVerificationToken' value='{WebUtility.HtmlEncode(token)}'><label>Correo electrÃ³nico</label><input name='email' type='email' required autocomplete='username'><label>ContraseÃ±a</label><input name='password' type='password' required autocomplete='current-password'><button type='submit'>Iniciar sesiÃ³n</button></form>");
+    var html = Page("Acceso", $"<h1>ðŸŒ¸ Milly K-Pop GO</h1><p>Acceso exclusivo por invitaciÃ³n.</p>{warning}<form method='post' action='/login'><input type='hidden' name='__RequestVerificationToken' value='{WebUtility.HtmlEncode(token)}'><label>Correo electrÃ³nico</label><input name='email' type='email' required autocomplete='username'><label>ContraseÃ±a</label><input name='password' type='password' required autocomplete='current-password'><button type='submit'>Iniciar sesiÃ³n</button></form><p><a href='/crear-cuenta'>Crear mi cuenta</a></p>");
     return Results.Content(html, "text/html; charset=utf-8");
 });
 
@@ -122,6 +143,7 @@ app.MapPost("/logout", async (HttpContext ctx, IAntiforgery antiforgery) =>
 }).DisableAntiforgery();
 
 app.MapGet("/denegado", () => Results.Content(Page("Acceso denegado", "<h1>Acceso denegado</h1><p>Tu cuenta no tiene permisos para ver esta secciÃ³n.</p><a href='/'>Volver al inicio</a>"), "text/html; charset=utf-8"));
+app.MapCodigosAccesoEndpoints();
 app.MapCompradoresEndpoints();
 app.MapArticulosEndpoints();
 app.MapPedidosEndpoints();

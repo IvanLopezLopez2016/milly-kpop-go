@@ -1,0 +1,23 @@
+@page "/admin/pagos"
+@rendermode InteractiveServer
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = "ADMIN")]
+@using MudBlazor
+@using MillyKpopGo.Pagos
+<PageTitle>Pagos y saldos · Milly K-Pop GO</PageTitle>
+<MudThemeProvider /><MudPopoverProvider /><MudDialogProvider /><MudSnackbarProvider />
+<section class="go85">
+  <MudText Typo="Typo.overline" Color="Color.Primary">MILLY K-POP GO · ADMIN</MudText>
+  <MudText Typo="Typo.h4">Pagos y saldos</MudText>
+  <MudText Color="Color.Secondary" Class="mb-4">Selecciona un comprador para registrar abonos y distribuirlos entre artículos o cargos.</MudText>
+  @if(Error is not null) { <MudAlert Severity="Severity.Error">@Error</MudAlert> }
+  else if(Loading) { <MudProgressLinear Indeterminate="true" /> }
+  else {
+    <MudPaper Class="pa-4" Elevation="0">
+       <MudTextField @bind-Value="Busqueda" Immediate="true" Label="Buscar comprador o alias" Clearable="true" Variant="Variant.Outlined" Class="mb-3" />
+       <MudTable Items="Filtrados" Dense="true" Hover="true" Breakpoint="Breakpoint.Sm"><HeaderContent><MudTh>Comprador</MudTh><MudTh>Alias</MudTh><MudTh>Estado</MudTh><MudTh></MudTh></HeaderContent>
+         <RowTemplate><MudTd DataLabel="Comprador">@context.Nombre</MudTd><MudTd DataLabel="Alias">@context.Alias</MudTd><MudTd DataLabel="Estado">@(context.Activo ? "Activo" : "Inactivo")</MudTd><MudTd><MudButton Color="Color.Primary" Href="@($"/admin/pagos/{context.Id:D}")" Size="Size.Small">Ver pagos</MudButton></MudTd></RowTemplate>
+         <NoRecordsContent>No hay compradores que coincidan.</NoRecordsContent><PagerContent><MudTablePager PageSizeOptions="new int[] {10,20,50}" /></PagerContent>
+       </MudTable>
+    </MudPaper>
+  }
+</section>

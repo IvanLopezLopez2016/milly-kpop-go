@@ -1,0 +1,25 @@
+@page "/admin/compradores/editar/{Id:guid}"
+@rendermode InteractiveServer
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = "ADMIN")]
+@using MudBlazor
+<PageTitle>Editar comprador · Milly K-Pop GO</PageTitle>
+<MudThemeProvider /><MudPopoverProvider /><MudDialogProvider /><MudSnackbarProvider />
+<div class="milly-catalog-page"><div class="milly-catalog-head"><MudText Typo="Typo.h4">Editar comprador</MudText><MudButton Href="/admin/compradores" Variant="Variant.Outlined">Volver</MudButton></div>
+@if (Error != null) { <MudAlert Severity="Severity.Error">@Error</MudAlert> }
+else if (Cargando) { <MudProgressLinear Indeterminate="true" /> }
+else if (Registro is not null) {
+    <MudPaper Class="pa-4 milly-catalog-edit" Elevation="0">
+      <form action="/admin/compradores/guardar" method="post" class="milly-catalog-form">
+        <input type="hidden" name="__RequestVerificationToken" value="@Token" /><input type="hidden" name="id" value="@Id" />
+        <label>Nombre completo *<input name="nombre" required minlength="2" maxlength="160" value="@Registro.Nombre" /></label>
+        <label>Alias<input name="alias" maxlength="100" value="@Registro.Alias" /></label>
+        <label>Correo<input type="email" name="correo" maxlength="254" value="@Registro.Correo" /></label>
+        <label>WhatsApp<input type="tel" name="whatsapp" maxlength="40" value="@Registro.Whatsapp" /></label>
+        <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled">Guardar cambios</MudButton>
+      </form>
+      <form action="/admin/compradores/estado" method="post" class="mt-4">
+        <input type="hidden" name="__RequestVerificationToken" value="@Token" /><input type="hidden" name="id" value="@Id" /><input type="hidden" name="activo" value="@(!Registro.Activo ? "true" : "false")" />
+        <MudButton ButtonType="ButtonType.Submit" Color="Color.Warning" Variant="Variant.Outlined">@(Registro.Activo ? "Desactivar comprador" : "Reactivar comprador")</MudButton>
+      </form>
+    </MudPaper>
+}</div>

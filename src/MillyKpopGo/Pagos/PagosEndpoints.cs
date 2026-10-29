@@ -18,8 +18,8 @@ public static class PagosEndpoints
     public static IEndpointRouteBuilder MapPagosEndpoints(this IEndpointRouteBuilder app)
     {
         var g = app.MapGroup("/admin/pagos").RequireAuthorization(new AuthorizeAttribute { Roles = "ADMIN" });
-        g.MapGet("", Lista);
-        g.MapGet("/{id:guid}", CompradorDetalle);
+        // GET migrado a Razor (008.5)
+        // GET detalle migrado a Razor (008.5)
         g.MapPost("/registrar", Registrar).DisableAntiforgery();
         g.MapPost("/{id:guid}/aplicar", Aplicar).DisableAntiforgery();
         return app;
