@@ -1,3 +1,4 @@
+using MillyKpopGo.Logistica;
 using MillyKpopGo.Pagos;
 using MillyKpopGo.Cajas;
 using MillyKpopGo.Pedidos;
@@ -126,6 +127,7 @@ app.MapArticulosEndpoints();
 app.MapPedidosEndpoints();
 app.MapCajasEndpoints();
 app.MapPagosEndpoints();
+app.MapLogisticaEndpoints();
 app.MapStaticAssets();
 app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 app.Run();
