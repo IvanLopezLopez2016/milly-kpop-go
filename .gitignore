@@ -1,0 +1,25 @@
+
+# .NET
+**/bin/
+**/obj/
+**/publish/
+*.user
+*.suo
+
+# Visual Studio
+.vs/
+.vscode/
+
+# Configuraciones privadas
+.env
+.env.*
+appsettings.Development.local.json
+*.pfx
+*.p12
+
+# Archivos temporales
+*.log
+*.tmp
+
+# Backups
+backups/

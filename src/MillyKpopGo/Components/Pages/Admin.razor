@@ -1,0 +1,13 @@
+@page "/admin"
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = "ADMIN")]
+<PageTitle>Panel ADMIN · Milly K-Pop GO</PageTitle>
+<div class="go-shell">
+  <header class="go-header"><div><small>MILLY K-POP GO</small><h1>Panel administrativo</h1><p>Sesión ADMIN validada con Supabase</p></div><span class="go-pill">ADMIN</span></header>
+  <section class="go-warning"><strong>Entrega 002.</strong> Acceso protegido y funcional. Todavía no se han habilitado operaciones con compradores, pedidos o pagos.</section>
+  <section class="go-grid">
+    <article class="go-card"><h2>👥 Compradores</h2><p>Próximo módulo: altas e invitaciones.</p></article>
+    <article class="go-card"><h2>📦 Artículos</h2><p>Catálogo único para todos los encargos.</p></article>
+    <article class="go-card"><h2>🛍️ Pedidos</h2><p>Asignaciones por cliente y caja.</p></article>
+  </section>
+  <p><a href="/logout">Cerrar sesión</a></p>
+</div>
