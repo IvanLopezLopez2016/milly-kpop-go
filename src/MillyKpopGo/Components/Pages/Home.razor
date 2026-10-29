@@ -1,22 +1,12 @@
 @page "/"
-<PageTitle>Milly K-Pop GO — Inicio</PageTitle>
-<div class="go-shell">
-    <header class="go-header"><div><small>MILLY K-POP</small><h1>Gestión de Group Orders</h1><p>Entrega 001 · Estructura inicial</p></div><span class="go-pill">DEMO LOCAL</span></header>
-    <section class="go-warning"><strong>Entorno de arranque.</strong> Esta pantalla no está conectada a Supabase ni tiene login. No introduzcas información real hasta implementar la autenticación de la Fase 2.</section>
-    <section class="go-grid">
-      @foreach (var modulo in Modulos)
-      {
-        <article class="go-card"><div class="go-symbol">@modulo.Icono</div><h2>@modulo.Nombre</h2><p>@modulo.Detalle</p><span>Próximamente</span></article>
-      }
-    </section>
-    <footer>Primero verificamos que .NET 10 arranque. Después activaremos Auth y conectaremos los módulos uno por uno.</footer>
-</div>
+@inject NavigationManager Navigation
+@using Microsoft.AspNetCore.Components
+
+<PageTitle>Milly K-Pop GO</PageTitle>
+
 @code {
- private readonly (string Icono,string Nombre,string Detalle)[] Modulos = [
- ("👥","Compradores","Altas, consultas e invitaciones solo por ADMIN"),
- ("📦","Artículos","Catálogo único y variantes"),
- ("🛍️","Pedidos","Asignaciones y precios históricos"),
- ("🚢","Cajas","Corea, Japón, USA y México"),
- ("💳","Pagos","Abonos, cargos y saldos a favor"),
- ("🚚","Entregas","Modalidades y seguimiento") ];
+    protected override void OnInitialized()
+    {
+        Navigation.NavigateTo("/login", forceLoad: true);
+    }
 }
