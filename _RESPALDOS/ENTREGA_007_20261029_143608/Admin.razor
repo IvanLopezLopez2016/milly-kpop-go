@@ -1,0 +1,43 @@
+@page "/admin"
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = "ADMIN")]
+
+<PageTitle>Panel administrativo · Milly K-Pop GO</PageTitle>
+
+<div class="go-shell">
+    <header class="go-header">
+        <div>
+            <small>MILLY K-POP GO</small>
+            <h1>Panel administrativo</h1>
+            <p>Bienvenida al centro de administración de pedidos.</p>
+        </div>
+        <span class="go-pill">ADMIN</span>
+    </header>
+
+    <section class="go-grid" aria-label="Módulos disponibles">
+        <article class="go-card">
+            <div class="go-symbol" aria-hidden="true">👥</div>
+            <h2>Compradores</h2>
+            <p>Registra, busca, edita y administra los datos de tus compradores.</p>
+            <p><a href="/admin/compradores">Abrir compradores</a></p>
+        </article>
+        <article class="go-card">
+            <div class="go-symbol" aria-hidden="true">📦</div>
+            <h2>Artículos</h2>
+            <p>Catálogo reutilizable, códigos, variantes y precios de referencia.</p>
+            <p><a href="/admin/articulos">Abrir artículos</a></p>
+        </article>
+        <article class="go-card">
+            <div class="go-symbol" aria-hidden="true">🛍️</div>
+            <h2>Pedidos</h2>
+            <p>Crea pedidos y consulta los artículos asignados a cada comprador.</p>
+            <p><a href="/admin/pedidos">Abrir pedidos</a></p>
+        </article>
+        <article class="go-card">
+            <div class="go-symbol" aria-hidden="true">ðŸ“¦</div>
+            <h2>Cajas internacionales</h2>
+            <p>Agrupa artÃ­culos de distintos compradores y actualiza el seguimiento de cada caja.</p>
+            <p><a href="/admin/cajas">Abrir cajas</a></p>
+        </article>
+    </section>
+    <p class="go-signout"><a href="/logout">Cerrar sesión</a></p>
+</div>

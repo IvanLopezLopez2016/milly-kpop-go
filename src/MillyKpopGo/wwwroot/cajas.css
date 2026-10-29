@@ -1,0 +1,20 @@
+.go-boxes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin:20px 0}
+.go-boxes-card{border:1px solid #e4d5dd;border-radius:14px;background:#fff;padding:18px}
+.go-boxes-card h2{font-size:1.2rem;margin:6px 0}
+.go-boxes-card p{margin:7px 0;color:#475569}
+.go-boxes-form{display:grid;gap:12px}
+.go-boxes-form label{display:grid;gap:5px;font-weight:600}
+.go-boxes-form input,.go-boxes-form select,.go-boxes-form textarea{box-sizing:border-box;width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:9px;font:inherit}
+.go-boxes-form button{max-width:max-content}
+.go-boxes-actions{display:flex;align-items:end;flex-wrap:wrap;gap:10px}
+.go-boxes-actions button{margin:0}
+.go-boxes-muted{color:#64748b;font-size:.9rem}
+.go-boxes-note{background:#fff7ed;border:1px solid #fdba74;padding:12px;border-radius:10px}
+.go-boxes-table-wrap{overflow-x:auto}
+.go-boxes-table{width:100%;border-collapse:collapse;min-width:650px}
+.go-boxes-table th,.go-boxes-table td{padding:11px;text-align:left;border-bottom:1px solid #e2e8f0;vertical-align:top}
+.go-boxes-table th{background:#fdf2f8;color:#831843}
+.go-boxes-inline{display:inline}
+.go-boxes-inline button{padding:7px 12px;cursor:pointer}
+.go-boxes-subnav{display:flex;flex-wrap:wrap;gap:12px;margin:12px 0}
+@media(max-width:650px){.go-boxes-table{min-width:590px}.go-boxes-form button{max-width:none}}

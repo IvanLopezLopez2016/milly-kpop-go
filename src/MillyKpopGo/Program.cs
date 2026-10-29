@@ -1,3 +1,5 @@
+using MillyKpopGo.Pagos;
+using MillyKpopGo.Cajas;
 using MillyKpopGo.Pedidos;
 using MillyKpopGo.Articulos;
 using MillyKpopGo.Compradores;
@@ -122,6 +124,8 @@ app.MapGet("/denegado", () => Results.Content(Page("Acceso denegado", "<h1>Acces
 app.MapCompradoresEndpoints();
 app.MapArticulosEndpoints();
 app.MapPedidosEndpoints();
+app.MapCajasEndpoints();
+app.MapPagosEndpoints();
 app.MapStaticAssets();
 app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 app.Run();
