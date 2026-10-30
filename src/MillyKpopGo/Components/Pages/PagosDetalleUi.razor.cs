@@ -24,6 +24,13 @@ public partial class PagosDetalleUi : ComponentBase, IDisposable
     protected string Nombre => Vista.Compradores.FirstOrDefault()?.Nombre ?? "Comprador";
     protected static string Dinero(decimal n) => n.ToString("C2",CultureInfo.GetCultureInfo("es-MX"));
     private string Key => "go85-pagos-"+Id.ToString("D");
+    protected Guid PagoSeleccionadoId { get; set; }
+
+    protected decimal SaldoDisponible =>
+        Vista.Disponibles
+            .Where(p => p.Id == PagoSeleccionadoId)
+            .Select(p => Vista.Disponible(p))
+            .FirstOrDefault();
     protected override async Task OnInitializedAsync()
     {
         if(State.TryTakeFromJson<string>(Key+"-csrf",out var cachedToken)) Token=cachedToken??"";
@@ -35,7 +42,8 @@ public partial class PagosDetalleUi : ComponentBase, IDisposable
             catch(Exception ex) { Error=ex.Message; }
         }
         else Error="No fue posible recuperar la sesión. Accede nuevamente desde el panel.";
-        Loading=false;
+        PagoSeleccionadoId = Vista.Disponibles.FirstOrDefault()?.Id ?? Guid.Empty;
+        Loading =false;
         _subscription=State.RegisterOnPersisting(()=>{State.PersistAsJson(Key,Vista);State.PersistAsJson(Key+"-csrf",Token);return Task.CompletedTask;});
     }
     protected override void OnAfterRender(bool firstRender)
