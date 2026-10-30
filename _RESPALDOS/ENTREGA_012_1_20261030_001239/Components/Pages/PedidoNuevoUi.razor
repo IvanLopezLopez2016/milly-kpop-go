@@ -1,0 +1,19 @@
+@inherits PedidosCajasBase
+@page "/admin/pedidos/nuevo"
+@rendermode InteractiveServer
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = "ADMIN")]
+@using MudBlazor
+<PageTitle>Nuevo pedido · Milly K-Pop GO</PageTitle>
+<MudThemeProvider /><MudPopoverProvider /><MudDialogProvider /><MudSnackbarProvider />
+<section class="go84"><MudButton Href="/admin/pedidos">Volver a pedidos</MudButton><MudText Typo="Typo.h4" Class="mb-3">Nuevo pedido</MudText>
+@if(Error is not null) { <MudAlert Severity="Severity.Error">@Error</MudAlert> }
+else if(Loading) { <MudProgressLinear Indeterminate="true" /> }
+else if(!View.Compradores.Any(x=>x.Activo) || !View.Articulos.Any(x=>x.Activo)) { <MudAlert Severity="Severity.Warning">Registra un comprador y un artículo activos antes de crear pedidos.</MudAlert> }
+else { <MudPaper Class="pa-4" Elevation="0"><form action="/admin/pedidos/guardar" method="post" class="go84-form"><input type="hidden" name="__RequestVerificationToken" value="@Token" />
+<label>Comprador *<select name="comprador_id" required><option value="">Seleccionar comprador</option>@foreach(var c in View.Compradores.Where(x=>x.Activo).OrderBy(x=>x.Nombre)){ <option value="@c.Id">@c.Nombre (@c.Alias)</option> }</select></label>
+<label>Nota interna<textarea name="nota_interna" maxlength="1000" rows="2"></textarea></label>
+<MudText Typo="Typo.h6">Artículos</MudText><MudText Color="Color.Secondary">Cada precio pertenece al pedido, sin modificar el catálogo.</MudText>
+@foreach(var i in Indices){ <div class="go84-row" @key="i"><label>Artículo *<select name="@($"articulo_{i}")" required><option value="">Selecciona un artículo</option>@foreach(var a in View.Articulos.Where(x=>x.Activo).OrderBy(x=>x.Nombre)){ <option value="@a.Id">@a.Nombre · @a.Variante · @a.Sku</option> }</select></label><label>Cantidad *<input type="number" name="@($"cantidad_{i}")" value="1" min="1" max="999" step="1" required /></label><label>Precio MXN *<input type="number" name="@($"precio_{i}")" value="0.00" min="0" max="9999999999.99" step="0.01" required /></label><MudButton OnClick="@(()=>RemoveRow(i))" Variant="Variant.Outlined" Disabled="@(Indices.Count() == 1)">Quitar</MudButton></div> }
+<div class="go84-actions"><MudButton OnClick="AddRow" Variant="Variant.Outlined" Disabled="@(Indices.Count() >= 30)">+ Agregar artículo</MudButton><MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled">Guardar pedido</MudButton></div>
+</form></MudPaper>}
+</section>

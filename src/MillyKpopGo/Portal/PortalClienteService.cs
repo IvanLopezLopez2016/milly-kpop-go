@@ -54,6 +54,22 @@ public sealed class PortalClienteService(IHttpClientFactory factory, IConfigurat
             var ids = string.Join(",", vista.Pagos.Select(p => p.Id.ToString("D")));
             vista.Aplicaciones = await Read<PortalAplicacion>(http, $"aplicaciones_pago?select=id,pago_id,pedido_detalle_id,cargo_id,monto&pago_id=in.({ids})&limit=1000", ct);
         }
+        var cajasIds = vista.Detalles
+        .Where(d => d.CajaId.HasValue)
+        .Select(d => d.CajaId!.Value.ToString("D"))
+        .Distinct()
+        .ToList();
+
+            if (cajasIds.Count > 0)
+            {
+                var ids = string.Join(",", cajasIds);
+
+                vista.Cajas = await Read<PortalCaja>(
+                    http,
+                    $"cajas?select=id,codigo&id=in.({ids})",
+                    ct
+                );
+            }
         return vista;
     }
 
@@ -129,6 +145,15 @@ public sealed class PortalAplicacion
 }
 public sealed class PortalVista
 {
+    public List<PortalCaja> Cajas { get; set; } = [];
+    public string NombreCaja(Guid? cajaId)
+    {
+        if (cajaId is null)
+            return "Sin asignar";
+
+        return Cajas.FirstOrDefault(c => c.Id == cajaId.Value)?.Codigo
+            ?? "Sin asignar";
+    }
     public PortalComprador? Comprador { get; set; }
     public List<PortalPedido> Pedidos { get; set; } = [];
     public List<PortalDetalle> Detalles { get; set; } = [];
@@ -144,7 +169,13 @@ public sealed class PortalVista
     public decimal TotalCargos => Cargos.Sum(c => c.Monto);
     public decimal TotalPagos => Pagos.Sum(p => p.Monto);
     public decimal SaldoAFavor => TotalPagos - Aplicaciones.Sum(a => a.Monto);
-    public decimal PendientePorAplicar => Detalles.Where(d => d.Estado != "CANCELADO").Sum(d => Math.Max(0,d.Cantidad*d.PrecioUnitario - PagadoDetalle(d.Id)))
-        + Cargos.Sum(c => Math.Max(0,c.Monto - PagadoCargo(c.Id)));
+    public decimal PendientePorAplicar => Detalles.Where(d => d.Estado != "CANCELADO").Sum(d => Math.Max(0, d.Cantidad * d.PrecioUnitario - PagadoDetalle(d.Id)))
+        + Cargos.Sum(c => Math.Max(0, c.Monto - PagadoCargo(c.Id)));
     public decimal PendienteNeto => Math.Max(0, PendientePorAplicar - SaldoAFavor);
+}
+
+public sealed class PortalCaja
+{
+    public Guid Id { get; set; }
+    public string Codigo { get; set; } = "";
 }

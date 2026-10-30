@@ -109,22 +109,22 @@ public static class PedidosEndpoints
         var items = new List<object>();
         for (int i = 0; i < 30; i++)
         {
-            var articuloText = f[$"articulo_{i}"].ToString();
-            if (string.IsNullOrEmpty(articuloText)) continue;
-            if (!Guid.TryParse(articuloText, out var id)) return Error("Identificador de artículo inválido.", 400);
+            var nombre = f[$"nombre_{i}"].ToString().Trim();
+            if (string.IsNullOrEmpty(nombre)) continue;
+            if (nombre.Length > 250) return Error("El nombre del artículo no debe superar 250 caracteres.", 400);
             if (!int.TryParse(f[$"cantidad_{i}"].ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var cantidad) || cantidad is < 1 or > 999)
                 return Error("La cantidad debe estar entre 1 y 999.", 400);
             if (!decimal.TryParse(f[$"precio_{i}"].ToString(), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var precio) || precio < 0 || precio > 9999999999.99m || decimal.Round(precio,2) != precio)
                 return Error("Precio inválido: usa hasta dos decimales.", 400);
-            items.Add(new { articulo_id=id, cantidad, precio_unitario=precio });
+            items.Add(new { nombre, cantidad, precio_unitario=precio });
         }
         if (items.Count == 0) return Error("Agrega al menos un artículo.", 400);
         var jwt = await ctx.GetTokenAsync("access_token");
         if (string.IsNullOrWhiteSpace(jwt)) return Results.Redirect("/logout");
         using var http = Client(factory, cfg, jwt);
-        using var response = await http.PostAsJsonAsync("rpc/crear_pedido_go", new { p_comprador_id=compradorId, p_nota_interna=nota, p_items=items }, JsonOpt, ctx.RequestAborted);
+        using var response = await http.PostAsJsonAsync("rpc/crear_pedido_manual_go", new { p_comprador_id=compradorId, p_nota_interna=nota, p_items=items }, JsonOpt, ctx.RequestAborted);
         if (!response.IsSuccessStatusCode)
-            return Error("No se pudo guardar el pedido. Comprueba que ejecutaste 005_crear_pedido.sql y que comprador y artículos estén activos. HTTP " + (int)response.StatusCode, 400);
+            return Error("No se pudo guardar el pedido. Comprueba que ejecutaste 012_1_pedido_manual.sql y que la compradora esté activa. HTTP " + (int)response.StatusCode, 400);
         var raw = await response.Content.ReadAsStringAsync(ctx.RequestAborted);
         try
         {

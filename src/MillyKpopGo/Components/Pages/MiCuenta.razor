@@ -26,10 +26,11 @@
    @if (TabActual == "articulos")
    {
     <MudTable Items="Vista.Detalles" Hover="true" Dense="true" Breakpoint="Breakpoint.Sm" RowsPerPage="10">
-     <HeaderContent><MudTh>Artículo</MudTh><MudTh>Cantidad</MudTh><MudTh>Estado</MudTh><MudTh>Entrega</MudTh><MudTh>Importe</MudTh><MudTh>Saldo</MudTh></HeaderContent>
+     <HeaderContent><MudTh>Artículo</MudTh><MudTh>Cantidad</MudTh><MudTh>Caja</MudTh><MudTh>Estado</MudTh><MudTh>Entrega</MudTh><MudTh>Importe</MudTh><MudTh>Saldo</MudTh></HeaderContent>
      <RowTemplate>
       <MudTd DataLabel="Artículo"><strong>@Vista.Articulo(context.ArticuloId)</strong>@if(!string.IsNullOrWhiteSpace(context.NotaPublica)){<div class="go9-note">@context.NotaPublica</div>}</MudTd>
       <MudTd DataLabel="Cantidad">@context.Cantidad</MudTd>
+      <MudTd DataLabel="Caja">@Vista.NombreCaja(context.CajaId) </MudTd>     
       <MudTd DataLabel="Estado"><MudChip T="string" Size="Size.Small" Color="Color.Default">@Etiqueta(context.Estado)</MudChip></MudTd>
       <MudTd DataLabel="Entrega">@Etiqueta(context.TipoEntrega)</MudTd>
       <MudTd DataLabel="Importe">@Dinero(context.Cantidad*context.PrecioUnitario)</MudTd>
