@@ -1,0 +1,91 @@
+@page "/admin"
+@rendermode InteractiveServer
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = "ADMIN")]
+@using MudBlazor
+@using MillyKpopGo.Dashboard
+
+<PageTitle>Dashboard · Milly K-Pop GO</PageTitle>
+
+<MudThemeProvider />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<div class="go-dashboard">
+    <header class="go-header">
+        <div>
+            <p class="go-overline">MILLY K-POP GO · ADMIN</p>
+            <h1>Resumen de tu GO</h1>
+            <p>Ventas, abonos, pendientes y envíos en un solo lugar.</p>
+        </div>
+        <MudButton Href="/logout" Variant="Variant.Outlined" Color="Color.Primary">Cerrar sesión</MudButton>
+    </header>
+
+    @if (Cargando)
+    {
+        <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+        <p>Cargando movimientos desde Supabase…</p>
+    }
+    else if (Error is not null)
+    {
+        <MudAlert Severity="Severity.Error">@Error</MudAlert>
+    }
+    else
+    {
+        <div class="go-stats">
+            <MudPaper Class="go-stat"><span>Ventas de artículos</span><strong>@Dinero(Resumen.VentasArticulos)</strong><small>Importe de artículos no cancelados</small></MudPaper>
+            <MudPaper Class="go-stat"><span>Cargos adicionales</span><strong>@Dinero(Resumen.TotalCargos)</strong><small>EMS, aduana y otros cargos</small></MudPaper>
+            <MudPaper Class="go-stat"><span>Pagos recibidos</span><strong>@Dinero(Resumen.PagosRecibidos)</strong><small>Todos los abonos registrados</small></MudPaper>
+            <MudPaper Class="go-stat go-stat-focus"><span>Pendiente neto</span><strong>@Dinero(Resumen.PendienteNeto)</strong><small>Artículos + cargos − pagos recibidos; mínimo $0</small></MudPaper>
+        </div>
+        <div class="go-mini-stats">
+            <MudPaper Class="go-mini"><MudIcon Icon="@Icons.Material.Filled.People" Color="Color.Primary" /><b>@Resumen.CompradorasActivas</b><span>Compradoras activas</span></MudPaper>
+            <MudPaper Class="go-mini"><MudIcon Icon="@Icons.Material.Filled.ShoppingBag" Color="Color.Primary" /><b>@Resumen.Pedidos</b><span>Pedidos</span></MudPaper>
+            <MudPaper Class="go-mini"><MudIcon Icon="@Icons.Material.Filled.Inventory2" Color="Color.Primary" /><b>@Resumen.ArticulosPendientes</b><span>Renglones pendientes</span></MudPaper>
+            <MudPaper Class="go-mini"><MudIcon Icon="@Icons.Material.Filled.LocalShipping" Color="Color.Primary" /><b>@Resumen.CajasActivas</b><span>Cajas en proceso</span></MudPaper>
+            <MudPaper Class="go-mini"><MudIcon Icon="@Icons.Material.Filled.AccountBalanceWallet" Color="Color.Primary" /><b>@Dinero(Resumen.SaldoSinAplicar)</b><span>Abonos sin aplicar</span></MudPaper>
+        </div>
+        <div class="go-details">
+            <MudPaper Class="go-section">
+                <div class="go-section-title"><h2>Compradoras con adeudo</h2><MudButton Href="/admin/pagos" Color="Color.Primary" Variant="Variant.Text" Size="Size.Small">Ir a pagos</MudButton></div>
+                @if (Resumen.CompradorasConAdeudo.Count == 0)
+                {
+                    <MudText Color="Color.Secondary">No hay adeudos pendientes.</MudText>
+                }
+                else
+                {
+                    <MudTable Items="@Resumen.CompradorasConAdeudo" Dense="true" Hover="true" Breakpoint="Breakpoint.Sm">
+                        <HeaderContent><MudTh>Compradora</MudTh><MudTh>Pendiente</MudTh><MudTh></MudTh></HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="Compradora">@context.Nombre</MudTd>
+                            <MudTd DataLabel="Pendiente">@Dinero(context.Pendiente)</MudTd>
+                            <MudTd><MudButton Href="@($"/admin/pagos/{context.CompradorId:D}")" Size="Size.Small" Variant="Variant.Text" Color="Color.Primary">Ver</MudButton></MudTd>
+                        </RowTemplate>
+                    </MudTable>
+                }
+            </MudPaper>
+            <MudPaper Class="go-section">
+                <h2>Artículos por estado</h2>
+                @foreach (var item in Resumen.ArticulosPorEstado)
+                {
+                    <div class="go-group"><span>@Estado(item.Nombre)</span><b>@item.Cantidad</b></div>
+                }
+                <h2 class="go-subtitle">Cajas por origen</h2>
+                @foreach (var item in Resumen.CajasPorOrigen)
+                {
+                    <div class="go-group"><span>@Estado(item.Nombre)</span><b>@item.Cantidad</b></div>
+                }
+            </MudPaper>
+        </div>
+    }
+
+    <h2 class="go-links-title">Administración</h2>
+    <nav class="go-links" aria-label="Módulos administrativos">
+        <MudButton Href="/admin/compradores" Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Filled.People">Compradores</MudButton>
+        <MudButton Href="/admin/articulos" Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Inventory2">Artículos</MudButton>
+        <MudButton Href="/admin/pedidos" Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Filled.ShoppingBag">Pedidos</MudButton>
+        <MudButton Href="/admin/cajas" Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Filled.LocalShipping">Cajas</MudButton>
+        <MudButton Href="/admin/pagos" Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Payments">Pagos</MudButton>
+        <MudButton Href="/admin/logistica" Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Filled.ReceiptLong">Logística</MudButton>
+    </nav>
+</div>

@@ -23,11 +23,12 @@
         </div>
     </header>
 
-    <MudAlert Severity="Severity.Info" Variant="Variant.Outlined" Class="mb-4">
-        MudBlazor está integrado. Los módulos existentes continúan con sus pantallas actuales mientras migramos sus formularios progresivamente.
-    </MudAlert>
-
     <div class="milly-module-grid">
+        <MudPaper Class="milly-module milly-module-dashboard" Elevation="0">
+            <MudIcon Icon="@Icons.Material.Filled.Dashboard" Color="Color.Primary" Size="Size.Large" />
+            <h2>Dashboard</h2><p>Ventas, abonos, adeudos y seguimiento general de tu GO.</p>
+            <MudButton Href="/admin/dashboard" Variant="Variant.Filled" Color="Color.Primary">Ver dashboard</MudButton>
+        </MudPaper>
         <MudPaper Class="milly-module" Elevation="0">
             <MudIcon Icon="@Icons.Material.Filled.People" Color="Color.Primary" Size="Size.Large" />
             <h2>Compradores</h2><p>Registrar, buscar y editar compradores.</p>
@@ -60,9 +61,5 @@
         </MudPaper>
     </div>
 
-    <MudPaper Elevation="0" Class="milly-demo">
-        <h2>Notificaciones reutilizables</h2>
-        <p>Comprueba que Blazor Interactive Server y el Snackbar de MudBlazor funcionan sin escribir JavaScript manual.</p>
-        <MudButton OnClick="MostrarExito" Color="Color.Success" Variant="Variant.Filled">Probar notificación de éxito</MudButton>
-    </MudPaper>
+
 </div>

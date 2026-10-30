@@ -1,0 +1,13 @@
+@rendermode InteractiveServer
+@implements IDisposable
+
+@if (Mostrar)
+{
+    <nav class="go-nav-return" aria-label="Navegación administrativa">
+        <a class="go-nav-primary" href="@VolverUrl"><span aria-hidden="true">←</span> @VolverTexto</a>
+        @if (VolverUrl != "/admin")
+        {
+            <a class="go-nav-home" href="/admin"><span aria-hidden="true">⌂</span> Menú principal</a>
+        }
+    </nav>
+}

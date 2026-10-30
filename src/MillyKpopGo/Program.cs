@@ -42,6 +42,7 @@ builder.Services.AddRateLimiter(options => {
     options.RejectionStatusCode=429;
 });
 builder.Services.AddMudServices();
+builder.Services.AddScoped<MillyKpopGo.Dashboard.DashboardUiService>();
 builder.Services.AddScoped<MillyKpopGo.Portal.PortalClienteService>();
 builder.Services.AddScoped<MillyKpopGo.Pagos.PagosUiService>();
 builder.Services.AddScoped<MillyKpopGo.Pedidos.PedidosCajasUiService>();
@@ -150,6 +151,25 @@ app.MapPedidosEndpoints();
 app.MapCajasEndpoints();
 app.MapPagosEndpoints();
 app.MapLogisticaEndpoints();
+// 010.2: guarda únicamente la procedencia visual del Dashboard (no es autenticación).
+app.Use(async (ctx, next) =>
+{
+    var path = ctx.Request.Path.Value ?? "";
+    if (HttpMethods.IsGet(ctx.Request.Method) && path.Equals("/admin", StringComparison.OrdinalIgnoreCase))
+    {
+        ctx.Response.Cookies.Delete("MillyGo.NavOrigin", new CookieOptions { Path = "/admin" });
+    }
+    else if (HttpMethods.IsGet(ctx.Request.Method) && path.StartsWith("/admin/", StringComparison.OrdinalIgnoreCase)
+             && ctx.Request.Query.TryGetValue("origen", out var origen) && origen == "dashboard")
+    {
+        ctx.Response.Cookies.Append("MillyGo.NavOrigin", "dashboard", new CookieOptions
+        {
+            HttpOnly = true, Secure = ctx.Request.IsHttps, SameSite = SameSiteMode.Lax,
+            Path = "/admin", IsEssential = true
+        });
+    }
+    await next();
+});
 app.MapStaticAssets();
 app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 app.Run();
