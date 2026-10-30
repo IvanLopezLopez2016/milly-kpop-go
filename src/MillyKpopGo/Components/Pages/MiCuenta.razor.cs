@@ -11,6 +11,16 @@ public partial class MiCuenta : ComponentBase, IDisposable
     [Inject] protected PersistentComponentState State { get; set; } = default!;
     private PersistingComponentStateSubscription _subscription;
     private bool _registered;
+    [SupplyParameterFromQuery(Name = "tab")]
+    public string? Tab { get; set; }
+
+    protected string TabActual => Tab?.ToLowerInvariant() switch
+    {
+        "cargos" => "cargos",
+        "abonos" => "abonos",
+        _ => "articulos"
+    };
+
     protected PortalVista Vista { get; set; } = new();
     protected string? Error { get; set; }
     protected bool Loading { get; set; } = true;

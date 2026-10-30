@@ -17,8 +17,14 @@
    <MudPaper Class="pa-4" Elevation="0"><MudText Color="Color.Secondary">Pendiente neto</MudText><MudText Typo="Typo.h5">@Dinero(Vista.PendienteNeto)</MudText></MudPaper>
   </div>
   <MudAlert Severity="Severity.Info" Class="mb-4">Tu saldo a favor se descuenta del pendiente neto, aunque todavía no esté asignado a un artículo específico. Los importes no incluyen cargos futuros.</MudAlert>
-  <MudTabs Rounded="true" Elevation="0" Color="Color.Primary" Class="go9-tabs">
-   <MudTabPanel Text="Mis artículos">
+  <nav class="go9-tab-links" aria-label="Secciones de mi cuenta">
+   <a href="/mi-cuenta?tab=articulos" data-enhance-nav="false" class="@(TabActual == "articulos" ? "go9-tab-active" : "")" aria-current="@(TabActual == "articulos" ? "page" : null)">Mis artículos</a>
+   <a href="/mi-cuenta?tab=cargos" data-enhance-nav="false" class="@(TabActual == "cargos" ? "go9-tab-active" : "")" aria-current="@(TabActual == "cargos" ? "page" : null)">Cargos (@Vista.Cargos.Count)</a>
+   <a href="/mi-cuenta?tab=abonos" data-enhance-nav="false" class="@(TabActual == "abonos" ? "go9-tab-active" : "")" aria-current="@(TabActual == "abonos" ? "page" : null)">Mis abonos (@Vista.Pagos.Count)</a>
+  </nav>
+  <section class="go9-tab-content">
+   @if (TabActual == "articulos")
+   {
     <MudTable Items="Vista.Detalles" Hover="true" Dense="true" Breakpoint="Breakpoint.Sm" RowsPerPage="10">
      <HeaderContent><MudTh>Artículo</MudTh><MudTh>Cantidad</MudTh><MudTh>Estado</MudTh><MudTh>Entrega</MudTh><MudTh>Importe</MudTh><MudTh>Saldo</MudTh></HeaderContent>
      <RowTemplate>
@@ -31,22 +37,24 @@
      </RowTemplate><NoRecordsContent>Aún no tienes artículos registrados.</NoRecordsContent>
      <PagerContent><MudTablePager PageSizeOptions="new int[] {10,20,50}" /></PagerContent>
     </MudTable>
-   </MudTabPanel>
-   <MudTabPanel Text="Cargos">
+   }
+   @if (TabActual == "cargos")
+   {
     <MudTable Items="Vista.Cargos" Hover="true" Dense="true" RowsPerPage="10">
      <HeaderContent><MudTh>Artículo</MudTh><MudTh>Concepto</MudTh><MudTh>Descripción</MudTh><MudTh>Monto</MudTh><MudTh>Pendiente</MudTh></HeaderContent>
      <RowTemplate><MudTd DataLabel="Artículo">@NombreCargo(context.PedidoDetalleId)</MudTd><MudTd DataLabel="Concepto">@Etiqueta(context.Tipo)</MudTd><MudTd DataLabel="Descripción">@context.Descripcion</MudTd><MudTd DataLabel="Monto">@Dinero(context.Monto)</MudTd><MudTd DataLabel="Pendiente">@Dinero(Math.Max(0,context.Monto-Vista.PagadoCargo(context.Id)))</MudTd></RowTemplate>
      <NoRecordsContent>No tienes cargos adicionales.</NoRecordsContent><PagerContent><MudTablePager PageSizeOptions="new int[] {10,20,50}" /></PagerContent>
     </MudTable>
-   </MudTabPanel>
-   <MudTabPanel Text="Mis abonos">
+   }
+   @if (TabActual == "abonos")
+   {
     <MudTable Items="Vista.Pagos" Hover="true" Dense="true" RowsPerPage="10">
      <HeaderContent><MudTh>Fecha</MudTh><MudTh>Importe</MudTh><MudTh>Sin aplicar</MudTh><MudTh>Método</MudTh><MudTh>Referencia</MudTh></HeaderContent>
      <RowTemplate><MudTd DataLabel="Fecha">@context.Fecha.ToLocalTime().ToString("dd/MM/yyyy")</MudTd><MudTd DataLabel="Importe">@Dinero(context.Monto)</MudTd><MudTd DataLabel="Sin aplicar">@Dinero(Vista.DisponiblePago(context.Id))</MudTd><MudTd DataLabel="Método">@context.Metodo</MudTd><MudTd DataLabel="Referencia">@context.Referencia</MudTd></RowTemplate>
      <NoRecordsContent>No se han registrado abonos.</NoRecordsContent><PagerContent><MudTablePager PageSizeOptions="new int[] {10,20,50}" /></PagerContent>
     </MudTable>
-   </MudTabPanel>
-  </MudTabs>
+   }
+  </section>
   <MudText Color="Color.Secondary" Class="mt-4">Este portal es de consulta. Para aclaraciones o comprobantes, contacta a la administración de Milly K-Pop GO.</MudText>
  }
 </section>

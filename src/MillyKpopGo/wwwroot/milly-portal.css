@@ -1,1 +1,10 @@
 .go9-portal{max-width:1250px;margin:0 auto;padding:24px 18px 52px;color:#35232d}.go9-top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:24px}.go9-actions{display:flex;gap:8px;flex-wrap:wrap}.go9-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:18px}.go9-stats .mud-paper{border:1px solid #f1e1eb;border-radius:14px;background:#fff}.go9-tabs{background:#fff;border:1px solid #f1e1eb;border-radius:14px;overflow:hidden}.go9-note{font-size:.83rem;color:#6b5b65;margin-top:5px}.go9-tabs .mud-table{width:100%}@media(max-width:780px){.go9-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.go9-top{align-items:flex-start;flex-direction:column}}@media(max-width:390px){.go9-stats{grid-template-columns:1fr}.go9-portal{padding:14px 10px 32px}}
+
+/* Navegación que funciona sin eventos de Blazor/SignalR. */
+.go9-tab-links{display:flex;flex-wrap:wrap;gap:0;background:#6251e9;border-radius:12px 12px 0 0;overflow:hidden}
+.go9-tab-links a{display:inline-flex;align-items:center;min-height:44px;padding:10px 16px;color:#fff;text-decoration:none;font-weight:650;font-size:.84rem}
+.go9-tab-links a:hover{background:#796bf0;color:#fff}
+.go9-tab-links a.go9-tab-active{background:#4e3bcf;color:#fff;box-shadow:inset 0 -3px #fff}
+.go9-tab-content{background:#fff;border:1px solid #f1e1eb;border-top:0;border-radius:0 0 12px 12px;overflow:hidden}
+.go9-tab-content .mud-table{width:100%}
+@media(max-width:520px){.go9-tab-links a{padding:10px 9px;font-size:.73rem}}
