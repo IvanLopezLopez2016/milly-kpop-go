@@ -1,6 +1,59 @@
+@using MudBlazor
+@using Microsoft.AspNetCore.Components.Authorization
 @inherits LayoutComponentBase
+<div class="go-app-layout">
 
-<main class="go-app-layout">
-    <NavegacionRegreso />
-    @Body
-</main>
+    <main class="go-main-content">
+        <!-- HEADER -->
+    <header class="go-header">
+
+        <a href="/" class="go-header-brand">
+            🌸 MILLY K-POP GO
+        </a>
+
+        <div class="go-header-actions">
+
+            <AuthorizeView Roles="ADMIN">
+                <Authorized>
+                    <span class="go-role-badge">
+                        ADMIN
+                    </span>
+
+                
+                </Authorized>
+            </AuthorizeView>
+
+            <AuthorizeView Roles="CLIENTE">
+                <Authorized>
+                    <span class="go-role-badge">
+                        CLIENTE
+                    </span>
+
+                    <a href="/mi-cuenta" class="go-header-link">
+                        Mi cuenta
+                    </a>
+                </Authorized>
+            </AuthorizeView>
+
+            <AuthorizeView>
+                <Authorized>
+                    <a href="/logout" class="go-logout">
+                        Cerrar sesión
+                    </a>
+                </Authorized>
+            </AuthorizeView>
+
+        </div>
+    </header>
+
+        <NavegacionRegreso />
+
+        @Body
+    </main>
+
+    <footer class="go-footer">
+        <span>🌸 MILLY K-POP GO</span>
+        <span>© 2026 · Todos los derechos reservados</span>
+    </footer>
+
+</div>

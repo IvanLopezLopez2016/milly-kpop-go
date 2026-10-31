@@ -33,6 +33,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.SlidingExpiration = false;
     });
 builder.Services.AddHttpClient();
+builder.Services.AddScoped<MillyKpopGo.Administradores.AdministradoresService>();
 builder.Services.AddScoped<CodigosAccesoService>();
 builder.Services.AddRateLimiter(options => {
     options.AddPolicy("registro", ctx => RateLimitPartition.GetFixedWindowLimiter(

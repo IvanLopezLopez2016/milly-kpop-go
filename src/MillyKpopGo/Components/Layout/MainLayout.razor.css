@@ -96,3 +96,278 @@ main {
         right: 0.75rem;
         top: 0.5rem;
     }
+
+
+
+/* ==========================================
+   MILLY K-POP GO
+   ESTILOS GENERALES DEL LAYOUT
+   ========================================== */
+
+.go-app-layout {
+    min-height: 100vh;
+    background-color: #FFF5FA;
+}
+
+/* ==========================================
+   HEADER FIJO
+   ========================================== */
+
+.go-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 65px;
+    padding: 0 30px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    background-color: #EDE4FA;
+    border-bottom: 1px solid #D8C6ED;
+    z-index: 1100;
+}
+
+/* Nombre / logo de la aplicación */
+
+.go-header-brand {
+    color: #7042A1;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+    .go-header-brand:hover {
+        color: #583181;
+        text-decoration: none;
+    }
+
+/* Contenedor de acciones del header */
+
+.go-header-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 16px;
+    min-width: 0;
+}
+
+/* ==========================================
+   ROL DEL USUARIO
+   ========================================== */
+
+.go-role-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    border-radius: 20px;
+    background-color: #FFFFFF;
+    color: #7042A1;
+    border: 1px solid #D8C6ED;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+/* ==========================================
+   ENLACES DE NAVEGACIÓN
+   ========================================== */
+
+.go-header-link {
+    color: #7042A1;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 0.2s ease;
+}
+
+    .go-header-link:hover {
+        color: #583181;
+        text-decoration: underline;
+    }
+
+/* ==========================================
+   BOTÓN CERRAR SESIÓN
+   ========================================== */
+
+.go-logout {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 9px 14px;
+    border-radius: 9px;
+    background-color: #FFFFFF;
+    color: #B4235A;
+    border: 1px solid #F1BDD2;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+    .go-logout:hover {
+        background-color: #FCE7F3;
+        border-color: #E9A4C3;
+        color: #9D174D;
+        transform: translateY(-1px);
+        text-decoration: none;
+    }
+
+    .go-logout:active {
+        transform: translateY(0);
+    }
+
+/* Accesibilidad mediante teclado */
+
+.go-header a:focus-visible {
+    outline: 2px solid #7042A1;
+    outline-offset: 3px;
+}
+
+/* ==========================================
+   CONTENIDO PRINCIPAL
+   ========================================== */
+
+.go-main-content {
+    min-height: 100vh;
+    /* Espacio para el header fijo */
+    padding-top: 85px;
+    /* Espacio para el footer fijo */
+    padding-bottom: 85px;
+    box-sizing: border-box;
+}
+
+/* ==========================================
+   FOOTER FIJO
+   ========================================== */
+
+.go-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    min-height: 55px;
+    padding: 12px 30px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background-color: #EDE4FA;
+    color: #7042A1;
+    border-top: 1px solid #D8C6ED;
+    font-size: 13px;
+    z-index: 1100;
+}
+
+/* ==========================================
+   TABLETS
+   ========================================== */
+
+@media (max-width: 900px) {
+
+    .go-header {
+        padding: 0 20px;
+    }
+
+    .go-header-brand {
+        font-size: 16px;
+    }
+
+    .go-header-actions {
+        gap: 10px;
+    }
+
+    .go-header-link {
+        font-size: 13px;
+    }
+
+    .go-footer {
+        padding: 12px 20px;
+    }
+}
+
+/* ==========================================
+   CELULARES
+   ========================================== */
+
+@media (max-width: 600px) {
+
+    .go-header {
+        height: 60px;
+        padding: 0 12px;
+        gap: 8px;
+    }
+
+    .go-header-brand {
+        font-size: 13px;
+        letter-spacing: 0;
+    }
+
+    .go-header-actions {
+        gap: 7px;
+    }
+
+    .go-role-badge {
+        padding: 5px 8px;
+        font-size: 10px;
+    }
+
+    /* Ocultamos el enlace adicional para
+       que el header no se desborde */
+
+    .go-header-link {
+        display: none;
+    }
+
+    .go-logout {
+        padding: 7px 9px;
+        font-size: 11px;
+    }
+
+    .go-main-content {
+        padding-top: 75px;
+        padding-bottom: 100px;
+    }
+
+    .go-footer {
+        flex-direction: column;
+        justify-content: center;
+        gap: 4px;
+        min-height: 65px;
+        padding: 8px 12px;
+        text-align: center;
+        font-size: 11px;
+    }
+}
+
+/* ==========================================
+   CELULARES MUY PEQUEÑOS
+   ========================================== */
+
+@media (max-width: 380px) {
+
+    .go-header-brand {
+        font-size: 11px;
+    }
+
+    .go-role-badge {
+        font-size: 9px;
+        padding: 4px 6px;
+    }
+
+    .go-logout {
+        font-size: 10px;
+        padding: 6px 7px;
+    }
+}
+

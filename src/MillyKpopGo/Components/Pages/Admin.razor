@@ -13,13 +13,8 @@
 <div class="milly-admin">
     <header class="milly-admin-header">
         <div>
-            <p class="milly-eyebrow">MILLY K-POP GO</p>
             <h1>Panel administrativo</h1>
             <p class="milly-subtitle">Compradoras, pedidos, pagos y seguimiento en un solo lugar.</p>
-        </div>
-        <div class="milly-actions">
-            <MudChip T="string" Color="Color.Primary" Variant="Variant.Outlined">ADMIN</MudChip>
-            <MudButton Variant="Variant.Outlined" Color="Color.Primary" Href="/logout">Cerrar sesión</MudButton>
         </div>
     </header>
 
@@ -54,6 +49,11 @@
             <MudIcon Icon="@Icons.Material.Filled.ReceiptLong" Color="Color.Primary" Size="Size.Large" />
             <h2>Logística</h2><p>EMS, aduana, estados y entregas.</p>
             <MudButton Href="/admin/logistica" Variant="Variant.Filled" Color="Color.Primary">Abrir logística</MudButton>
+        </MudPaper>
+        <MudPaper Class="milly-module" Elevation="0">
+            <MudIcon Icon="@Icons.Material.Filled.AdminPanelSettings" Color="Color.Primary" Size="Size.Large" />
+            <h2>Administradores</h2><p>Crear accesos administrativos adicionales.</p>
+            <MudButton Href="/admin/administradores" Variant="Variant.Filled" Color="Color.Primary">Abrir administradores</MudButton>
         </MudPaper>
     </div>
 

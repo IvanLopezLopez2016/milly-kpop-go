@@ -6,7 +6,7 @@
 <PageTitle>Compradores · Milly K-Pop GO</PageTitle>
 <MudThemeProvider /><MudPopoverProvider /><MudDialogProvider /><MudSnackbarProvider />
 <div class="milly-catalog-page">
-    <div class="milly-catalog-head"><div><MudText Typo="Typo.overline" Color="Color.Primary">MILLY K-POP GO · ADMIN</MudText><MudText Typo="Typo.h4">Compradores</MudText><MudText Color="Color.Secondary">Registra y administra tus compradores.</MudText></div><MudButton Href="/admin" Variant="Variant.Outlined">Volver al panel</MudButton></div>
+    <div class="milly-catalog-head"><div><MudText Typo="Typo.overline" Color="Color.Primary">MILLY K-POP GO · ADMIN</MudText><MudText Typo="Typo.h4">Compradores</MudText><MudText Color="Color.Secondary">Registra y administra tus compradores.</MudText></div></div>
     @if (Error != null) { <MudAlert Severity="Severity.Error">@Error</MudAlert> }
     else if (Cargando) { <MudProgressLinear Indeterminate="true" /> }
     else
