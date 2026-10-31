@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
     <UserSecretsId>46d91635-980b-44bc-b654-79b50fe9146e</UserSecretsId>
+	 <RequiresAspNetWebAssets>true</RequiresAspNetWebAssets>
   </PropertyGroup>
 
   <ItemGroup>
