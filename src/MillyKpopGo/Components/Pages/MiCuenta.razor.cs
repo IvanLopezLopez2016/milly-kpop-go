@@ -14,12 +14,13 @@ public partial class MiCuenta : ComponentBase, IDisposable
     [SupplyParameterFromQuery(Name = "tab")]
     public string? Tab { get; set; }
 
-    protected string TabActual => Tab?.ToLowerInvariant() switch
-    {
-        "cargos" => "cargos",
-        "abonos" => "abonos",
-        _ => "articulos"
-    };
+    //protected string TabActual => Tab?.ToLowerInvariant() switch
+    //{
+    //    "cargos" => "cargos",
+    //    "abonos" => "abonos",
+    //    _ => "articulos"
+    //};
+    protected string TabActual { get; set; } = "articulos";
 
     protected PortalVista Vista { get; set; } = new();
     protected string? Error { get; set; }
@@ -28,6 +29,19 @@ public partial class MiCuenta : ComponentBase, IDisposable
     protected static string Dinero(decimal value) => value.ToString("C2", CultureInfo.GetCultureInfo("es-MX"));
     protected static string Etiqueta(string? value) => string.IsNullOrWhiteSpace(value) ? "Sin definir" : value.Replace('_', ' ');
     protected string NombreCargo(Guid detalleId) => Vista.Articulo(Vista.Detalles.FirstOrDefault(d => d.Id == detalleId)?.ArticuloId ?? Guid.Empty);
+
+    protected override void OnParametersSet()
+    {
+        if (Tab is not null)
+        {
+            TabActual = Tab.ToLowerInvariant() switch
+            {
+                "cargos" => "cargos",
+                "abonos" => "abonos",
+                _ => "articulos"
+            };
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -44,4 +58,10 @@ public partial class MiCuenta : ComponentBase, IDisposable
         _registered = true;
     }
     public void Dispose() { if (_registered) _subscription.Dispose(); }
+
+
+    protected void CambiarTab(string tab)
+    {
+        TabActual = tab;
+    }
 }

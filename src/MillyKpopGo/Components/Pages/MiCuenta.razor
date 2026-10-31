@@ -9,7 +9,22 @@
     margin-left: auto;
     margin-right: auto;
     }
+    .go9-tab-links button {
+    appearance: none;
+    background: transparent;
+    border: none;
+    padding: 12px 18px;
+    color: #7042A1;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 10px;
+}
 
+.go9-tab-links button.go9-tab-active {
+    background: #7042A1;
+    color: white;
+}
     </style>
 <PageTitle>Mi cuenta · Milly K-Pop GO</PageTitle>
 <MudThemeProvider />
@@ -43,22 +58,25 @@
         <nav class="go9-tab-links" aria-label="Secciones de mi cuenta">
             <nav class="go9-tab-links" aria-label="Secciones de mi cuenta">
 
-    <a href="/mi-cuenta?tab=articulos"
-       class="@(TabActual == "articulos" ? "go9-tab-active" : "")">
-        Mis artículos
-    </a>
+                <button type="button"
+                        class="@(TabActual == "articulos" ? "go9-tab-active" : "")"
+                        @onclick='() => CambiarTab("articulos")'>
+                    Mis artículos
+                </button>
 
-    <a href="/mi-cuenta?tab=cargos"
-       class="@(TabActual == "cargos" ? "go9-tab-active" : "")">
-        Cargos (@Vista.Cargos.Count)
-    </a>
+                <button type="button"
+                        class="@(TabActual == "cargos" ? "go9-tab-active" : "")"
+                        @onclick='() => CambiarTab("cargos")'>
+                    Cargos
+                </button>
 
-    <a href="/mi-cuenta?tab=abonos"
-       class="@(TabActual == "abonos" ? "go9-tab-active" : "")">
-        Mis abonos (@Vista.Pagos.Count)
-    </a>
+                <button type="button"
+                        class="@(TabActual == "abonos" ? "go9-tab-active" : "")"
+                        @onclick='() => CambiarTab("abonos")'>
+                    Mis abonos
+                </button>
 
-</nav>
+            </nav>
         </nav>
         <section class="go9-tab-content">
             @if (TabActual == "articulos")
@@ -102,6 +120,10 @@
 
 </section>
 <div class="row">
-    <div class="row-1">    <MudImage Fluid="true" Src="imagenes/tc1.png" Width="500" Height="350" Alt="Milly K-POP" Class="rounded-lg centrado" />
+    <div class="row-1">    
+        <MudImage Fluid="true" Src="imagenes/tc1.png" Width="500" Height="350" Alt="Milly K-POP" Class="rounded-lg centrado" />
 </div>
+    <div class="row-1">
+        <MudImage Fluid="true" Src="imagenes/tc3.jpeg" Width="500" Height="350" Alt="Milly K-POP" Class="rounded-lg centrado" />
+    </div>
 </div>
