@@ -3,59 +3,93 @@
 @attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = "CLIENTE")]
 @using MudBlazor
 @using MillyKpopGo.Portal
+<style>
+    .centrado{
+           display: block;
+    margin-left: auto;
+    margin-right: auto;
+    }
+
+    </style>
 <PageTitle>Mi cuenta · Milly K-Pop GO</PageTitle>
-<MudThemeProvider /><MudPopoverProvider /><MudDialogProvider /><MudSnackbarProvider />
+<MudThemeProvider />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+
 <section class="go9-portal">
- <div class="go9-top"><div><MudText Typo="Typo.h4">Mi cuenta</MudText><MudText Color="Color.Primary">@Nombre </MudText><MudText Color="Color.Secondary">Mis compras y pagos</MudText></div><div class="go9-actions"><MudButton Href="/mi-cuenta" Color="Color.Primary" Variant="Variant.Outlined">Actualizar</MudButton></div></div>
- @if (Error is not null) { <MudAlert Severity="Severity.Error" Class="mb-4">@Error</MudAlert> }
- else if (Loading) { <MudProgressLinear Indeterminate="true" Class="mb-4" /> }
- else {
-  <div class="go9-stats">
-   <MudPaper Class="pa-4" Elevation="0"><MudText Color="Color.Secondary">Artículos y cargos</MudText><MudText Typo="Typo.h5">@Dinero(Vista.TotalArticulos+Vista.TotalCargos)</MudText></MudPaper>
-   <MudPaper Class="pa-4" Elevation="0"><MudText Color="Color.Secondary">Abonos registrados</MudText><MudText Typo="Typo.h5">@Dinero(Vista.TotalPagos)</MudText></MudPaper>
-   <MudPaper Class="pa-4" Elevation="0"><MudText Color="Color.Secondary">Saldo a favor</MudText><MudText Typo="Typo.h5" Color="Color.Success">@Dinero(Vista.SaldoAFavor)</MudText></MudPaper>
-   <MudPaper Class="pa-4" Elevation="0"><MudText Color="Color.Secondary">Pendiente neto</MudText><MudText Typo="Typo.h5">@Dinero(Vista.PendienteNeto)</MudText></MudPaper>
-  </div>
-  <MudAlert Severity="Severity.Info" Class="mb-4">Tu saldo a favor se descuenta del pendiente neto, aunque todavía no esté asignado a un artículo específico. Los importes no incluyen cargos futuros.</MudAlert>
-  <nav class="go9-tab-links" aria-label="Secciones de mi cuenta">
-   <a href="/mi-cuenta?tab=articulos" data-enhance-nav="false" class="@(TabActual == "articulos" ? "go9-tab-active" : "")" aria-current="@(TabActual == "articulos" ? "page" : null)">Mis artículos</a>
-   <a href="/mi-cuenta?tab=cargos" data-enhance-nav="false" class="@(TabActual == "cargos" ? "go9-tab-active" : "")" aria-current="@(TabActual == "cargos" ? "page" : null)">Cargos (@Vista.Cargos.Count)</a>
-   <a href="/mi-cuenta?tab=abonos" data-enhance-nav="false" class="@(TabActual == "abonos" ? "go9-tab-active" : "")" aria-current="@(TabActual == "abonos" ? "page" : null)">Mis abonos (@Vista.Pagos.Count)</a>
-  </nav>
-  <section class="go9-tab-content">
-   @if (TabActual == "articulos")
-   {
-    <MudTable Items="Vista.Detalles" Hover="true" Dense="true" Breakpoint="Breakpoint.Sm" RowsPerPage="10">
-     <HeaderContent><MudTh>Artículo</MudTh><MudTh>Cantidad</MudTh><MudTh>Caja</MudTh><MudTh>Estado</MudTh><MudTh>Entrega</MudTh><MudTh>Importe</MudTh><MudTh>Saldo</MudTh></HeaderContent>
-     <RowTemplate>
-      <MudTd DataLabel="Artículo"><strong>@Vista.Articulo(context.ArticuloId)</strong>@if(!string.IsNullOrWhiteSpace(context.NotaPublica)){<div class="go9-note">@context.NotaPublica</div>}</MudTd>
-      <MudTd DataLabel="Cantidad">@context.Cantidad</MudTd>
-      <MudTd DataLabel="Caja">@Vista.NombreCaja(context.CajaId) </MudTd>     
-      <MudTd DataLabel="Estado"><MudChip T="string" Size="Size.Small" Color="Color.Default">@Etiqueta(context.Estado)</MudChip></MudTd>
-      <MudTd DataLabel="Entrega">@Etiqueta(context.TipoEntrega)</MudTd>
-      <MudTd DataLabel="Importe">@Dinero(context.Cantidad*context.PrecioUnitario)</MudTd>
-      <MudTd DataLabel="Saldo">@Dinero(Math.Max(0,context.Cantidad*context.PrecioUnitario-Vista.PagadoDetalle(context.Id)))</MudTd>
-     </RowTemplate><NoRecordsContent>Aún no tienes artículos registrados.</NoRecordsContent>
-     <PagerContent><MudTablePager PageSizeOptions="new int[] {10,20,50}" /></PagerContent>
-    </MudTable>
-   }
-   @if (TabActual == "cargos")
-   {
-    <MudTable Items="Vista.Cargos" Hover="true" Dense="true" RowsPerPage="10">
-     <HeaderContent><MudTh>Artículo</MudTh><MudTh>Concepto</MudTh><MudTh>Descripción</MudTh><MudTh>Monto</MudTh><MudTh>Pendiente</MudTh></HeaderContent>
-     <RowTemplate><MudTd DataLabel="Artículo">@NombreCargo(context.PedidoDetalleId)</MudTd><MudTd DataLabel="Concepto">@Etiqueta(context.Tipo)</MudTd><MudTd DataLabel="Descripción">@context.Descripcion</MudTd><MudTd DataLabel="Monto">@Dinero(context.Monto)</MudTd><MudTd DataLabel="Pendiente">@Dinero(Math.Max(0,context.Monto-Vista.PagadoCargo(context.Id)))</MudTd></RowTemplate>
-     <NoRecordsContent>No tienes cargos adicionales.</NoRecordsContent><PagerContent><MudTablePager PageSizeOptions="new int[] {10,20,50}" /></PagerContent>
-    </MudTable>
-   }
-   @if (TabActual == "abonos")
-   {
-    <MudTable Items="Vista.Pagos" Hover="true" Dense="true" RowsPerPage="10">
-     <HeaderContent><MudTh>Fecha</MudTh><MudTh>Importe</MudTh><MudTh>Sin aplicar</MudTh><MudTh>Método</MudTh><MudTh>Referencia</MudTh></HeaderContent>
-     <RowTemplate><MudTd DataLabel="Fecha">@context.Fecha.ToLocalTime().ToString("dd/MM/yyyy")</MudTd><MudTd DataLabel="Importe">@Dinero(context.Monto)</MudTd><MudTd DataLabel="Sin aplicar">@Dinero(Vista.DisponiblePago(context.Id))</MudTd><MudTd DataLabel="Método">@context.Metodo</MudTd><MudTd DataLabel="Referencia">@context.Referencia</MudTd></RowTemplate>
-     <NoRecordsContent>No se han registrado abonos.</NoRecordsContent><PagerContent><MudTablePager PageSizeOptions="new int[] {10,20,50}" /></PagerContent>
-    </MudTable>
-   }
-  </section>
-  <MudText Color="Color.Secondary" Class="mt-4">Este portal es de consulta. Para aclaraciones o comprobantes, contacta a la administración de Milly K-Pop GO.</MudText>
- }
+    <MudImage Fluid="true" Src="imagenes/millykpopbaner.jpeg" Width="500" Height="350" Alt="Milly K-POP" Class="rounded-lg centrado" />
+
+    <div class="go9-top"><div><MudText Typo="Typo.h4">Mi cuenta</MudText><MudText Color="Color.Primary">@Nombre </MudText><MudText Color="Color.Secondary">Mis compras y pagos</MudText></div><div class="go9-actions"><MudButton Href="/mi-cuenta" Color="Color.Primary" Variant="Variant.Outlined">Actualizar</MudButton></div></div>
+    @if (Error is not null)
+    {
+        <MudAlert Severity="Severity.Error" Class="mb-4">@Error</MudAlert>
+    }
+    else if (Loading)
+    {
+
+        <MudProgressLinear Indeterminate="true" Class="mb-4" />
+    }
+    else
+    {
+        <div class="go9-stats">
+            <MudPaper Class="pa-4" Elevation="0"><MudText Color="Color.Secondary">Artículos y cargos</MudText><MudText Typo="Typo.h5">@Dinero(Vista.TotalArticulos + Vista.TotalCargos)</MudText></MudPaper>
+            <MudPaper Class="pa-4" Elevation="0"><MudText Color="Color.Secondary">Abonos registrados</MudText><MudText Typo="Typo.h5">@Dinero(Vista.TotalPagos)</MudText></MudPaper>
+            <MudPaper Class="pa-4" Elevation="0"><MudText Color="Color.Secondary">Saldo a favor</MudText><MudText Typo="Typo.h5" Color="Color.Success">@Dinero(Vista.SaldoAFavor)</MudText></MudPaper>
+            <MudPaper Class="pa-4" Elevation="0"><MudText Color="Color.Secondary">Pendiente neto</MudText><MudText Typo="Typo.h5">@Dinero(Vista.PendienteNeto)</MudText></MudPaper>
+        </div>
+        <MudAlert Severity="Severity.Info" Class="mb-4">Tu saldo a favor se descuenta del pendiente neto, aunque todavía no esté asignado a un artículo específico. Los importes no incluyen cargos futuros.</MudAlert>
+        <nav class="go9-tab-links" aria-label="Secciones de mi cuenta">
+            <a href="/mi-cuenta?tab=articulos" data-enhance-nav="false" class="@(TabActual == "articulos" ? "go9-tab-active" : "")" aria-current="@(TabActual == "articulos" ? "page" : null)">Mis artículos</a>
+            <a href="/mi-cuenta?tab=cargos" data-enhance-nav="false" class="@(TabActual == "cargos" ? "go9-tab-active" : "")" aria-current="@(TabActual == "cargos" ? "page" : null)">Cargos (@Vista.Cargos.Count)</a>
+            <a href="/mi-cuenta?tab=abonos" data-enhance-nav="false" class="@(TabActual == "abonos" ? "go9-tab-active" : "")" aria-current="@(TabActual == "abonos" ? "page" : null)">Mis abonos (@Vista.Pagos.Count)</a>
+        </nav>
+        <section class="go9-tab-content">
+            @if (TabActual == "articulos")
+            {
+                <MudTable Items="Vista.Detalles" Hover="true" Dense="true" Breakpoint="Breakpoint.Sm" RowsPerPage="10">
+                    <HeaderContent><MudTh>Artículo</MudTh><MudTh>Cantidad</MudTh><MudTh>Caja</MudTh><MudTh>Estado</MudTh><MudTh>Entrega</MudTh><MudTh>Importe</MudTh><MudTh>Saldo</MudTh></HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Artículo"><strong>@Vista.Articulo(context.ArticuloId)</strong>@if(!string.IsNullOrWhiteSpace(context.NotaPublica)){
+                            <div class="go9-note">@context.NotaPublica</div>
+                        }
+                    </MudTd>
+                    <MudTd DataLabel="Cantidad">@context.Cantidad</MudTd>
+                    <MudTd DataLabel="Caja">@Vista.NombreCaja(context.CajaId) </MudTd>
+                    <MudTd DataLabel="Estado"><MudChip T="string" Size="Size.Small" Color="Color.Default">@Etiqueta(context.Estado)</MudChip></MudTd>
+                    <MudTd DataLabel="Entrega">@Etiqueta(context.TipoEntrega)</MudTd>
+                    <MudTd DataLabel="Importe">@Dinero(context.Cantidad * context.PrecioUnitario)</MudTd>
+                    <MudTd DataLabel="Saldo">@Dinero(Math.Max(0, context.Cantidad * context.PrecioUnitario - Vista.PagadoDetalle(context.Id)))</MudTd>
+                </RowTemplate><NoRecordsContent>Aún no tienes artículos registrados.</NoRecordsContent>
+                <PagerContent><MudTablePager PageSizeOptions="new int[] { 10, 20, 50 }" /></PagerContent>
+            </MudTable>
+        }
+        @if (TabActual == "cargos")
+        {
+            <MudTable Items="Vista.Cargos" Hover="true" Dense="true" RowsPerPage="10">
+                <HeaderContent><MudTh>Artículo</MudTh><MudTh>Concepto</MudTh><MudTh>Descripción</MudTh><MudTh>Monto</MudTh><MudTh>Pendiente</MudTh></HeaderContent>
+                <RowTemplate><MudTd DataLabel="Artículo">@NombreCargo(context.PedidoDetalleId)</MudTd><MudTd DataLabel="Concepto">@Etiqueta(context.Tipo)</MudTd><MudTd DataLabel="Descripción">@context.Descripcion</MudTd><MudTd DataLabel="Monto">@Dinero(context.Monto)</MudTd><MudTd DataLabel="Pendiente">@Dinero(Math.Max(0, context.Monto - Vista.PagadoCargo(context.Id)))</MudTd></RowTemplate>
+                <NoRecordsContent>No tienes cargos adicionales.</NoRecordsContent><PagerContent><MudTablePager PageSizeOptions="new int[] { 10, 20, 50 }" /></PagerContent>
+            </MudTable>
+        }
+        @if (TabActual == "abonos")
+        {
+            <MudTable Items="Vista.Pagos" Hover="true" Dense="true" RowsPerPage="10">
+                <HeaderContent><MudTh>Fecha</MudTh><MudTh>Importe</MudTh><MudTh>Sin aplicar</MudTh><MudTh>Método</MudTh><MudTh>Referencia</MudTh></HeaderContent>
+                <RowTemplate><MudTd DataLabel="Fecha">@context.Fecha.ToLocalTime().ToString("dd/MM/yyyy")</MudTd><MudTd DataLabel="Importe">@Dinero(context.Monto)</MudTd><MudTd DataLabel="Sin aplicar">@Dinero(Vista.DisponiblePago(context.Id))</MudTd><MudTd DataLabel="Método">@context.Metodo</MudTd><MudTd DataLabel="Referencia">@context.Referencia</MudTd></RowTemplate>
+                <NoRecordsContent>No se han registrado abonos.</NoRecordsContent><PagerContent><MudTablePager PageSizeOptions="new int[] { 10, 20, 50 }" /></PagerContent>
+            </MudTable>
+        }
+    </section>
+    <MudText Color="Color.Secondary" Class="mt-4">Este portal es de consulta. Para aclaraciones o comprobantes, contacta a la administración de Milly K-Pop GO.</MudText>
+}
+
 </section>
+<div class="row">
+    <div class="row-1">    <MudImage Fluid="true" Src="imagenes/tc1.png" Width="500" Height="350" Alt="Milly K-POP" Class="rounded-lg centrado" />
+</div>
+    <div class="row-2">     <MudImage Fluid="true" Src="imagenes/tc2.png" Width="500" Height="350" Alt="Milly K-POP" Class="rounded-lg centrado" />
+</div>
+
+</div>
