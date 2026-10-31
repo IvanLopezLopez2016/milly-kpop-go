@@ -1,0 +1,14 @@
+@page "/logout"
+@layout MillyKpopGo.Components.Layout.AuthLayout
+@using MudBlazor
+@using Microsoft.AspNetCore.Components.Forms
+
+<MudPaper Class="go-auth-exit-card" Elevation="0">
+    <MudText Typo="Typo.h5" Class="go-auth-exit-title">Cerrar sesión</MudText>
+    <MudText Class="go-auth-exit-info">¿Quieres terminar tu sesión de MILLY K-POP GO?</MudText>
+    <form method="post" action="/auth/logout">
+        <AntiforgeryToken />
+        <button class="go-auth-exit-button" type="submit">Confirmar salida</button>
+    </form>
+    <a class="go-auth-exit-back" href="/">Volver</a>
+</MudPaper>

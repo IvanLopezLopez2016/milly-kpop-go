@@ -1,0 +1,12 @@
+.go-auth-layout {
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: 28px 16px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(150deg, #fff5fa, #f3e9ff);
+    color: #30212b;
+}
+.go-auth-shell { width: 100%; max-width: 430px; }

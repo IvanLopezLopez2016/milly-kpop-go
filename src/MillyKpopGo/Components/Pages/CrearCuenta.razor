@@ -1,8 +1,29 @@
 @page "/crear-cuenta"
 @rendermode InteractiveServer
 @using MudBlazor
+<style>
+    .go-crear-cuenta {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 8px 24px rgba(112, 66, 161, 0.1);
+    }
+    .go-btn-primary {
+    background-color: #7042A1 !important;
+    color: #FFFFFF !important;
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-weight: 600;
+}
+
+.go-btn-primary:hover {
+    background-color: #583181 !important;
+}
+
+    
+</style>
 <PageTitle>Crear mi cuenta · MILLY K-POP GO</PageTitle>
-<MudContainer MaxWidth="MaxWidth.Small" Class="my-8">
+<MudContainer MaxWidth="MaxWidth.Small" Class="my-8 go-crear-cuenta">
  <MudPaper Class="pa-6" Elevation="1">
   <MudText Typo="Typo.h4" Color="Color.Primary">🌸 Crear mi cuenta</MudText>
   <MudText Class="my-3">Solo para compradoras registradas por la administradora. Solicita tu código por WhatsApp.</MudText>
@@ -15,8 +36,8 @@
    <div class="my-3"><label>Código que te compartieron</label><input class="form-control" name="codigo" required maxlength="70" autocomplete="off" /></div>
    <div class="my-3"><label>Contraseña (mínimo 12 caracteres)</label><input class="form-control" name="password" type="password" minlength="12" maxlength="128" required autocomplete="new-password" /></div>
    <div class="my-3"><label>Confirma tu contraseña</label><input class="form-control" name="confirmar" type="password" minlength="12" maxlength="128" required autocomplete="new-password" /></div>
-   <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled" FullWidth="true">Activar mi cuenta</MudButton>
+            <MudButton DropShadow="true" class="mt-3 go-btn-primary" Color="Color.Primary" Variant="Variant.Filled" ButtonType="ButtonType.Submit" FullWidth="true">Activar mi cuenta</MudButton>
   </form>
-  <MudButton Href="/login" Variant="Variant.Text" Class="mt-3">Volver al inicio de sesión</MudButton>
+        <MudButton Href="/login" Variant="Variant.Text" Class="mt-3 go-btn-primary">Volver al inicio de sesión</MudButton>
  </MudPaper>
 </MudContainer>

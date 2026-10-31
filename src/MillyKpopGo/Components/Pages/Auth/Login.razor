@@ -1,0 +1,24 @@
+@page "/login"
+@layout MillyKpopGo.Components.Layout.AuthLayout
+@using MudBlazor
+@using Microsoft.AspNetCore.Components.Forms
+
+<MudPaper Class="go-auth-card" Elevation="0">
+    <div class="go-auth-heading">🌸 MILLY K-POP GO</div>
+    <MudText Typo="Typo.body1" Class="go-auth-subtitle">Acceso exclusivo por invitación.</MudText>
+
+    @if (MostrarError)
+    {
+        <div class="go-auth-error" role="alert">No fue posible iniciar sesión. Verifica tus credenciales y permisos.</div>
+    }
+
+    <form method="post" action="/auth/login">
+        <AntiforgeryToken />
+        <label class="go-auth-label" for="go-email">Correo electrónico</label>
+        <input id="go-email" class="go-auth-input" type="email" name="email" autocomplete="username" maxlength="320" required />
+        <label class="go-auth-label" for="go-password">Contraseña</label>
+        <input id="go-password" class="go-auth-input" type="password" name="password" autocomplete="current-password" required />
+        <button class="go-auth-primary" type="submit">Iniciar sesión</button>
+    </form>
+    <p class="go-auth-bottom"><a href="/crear-cuenta">Crear mi cuenta</a></p>
+</MudPaper>

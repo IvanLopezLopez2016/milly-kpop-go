@@ -1,0 +1,6 @@
+.go-auth-exit-card { background:white; padding:30px; border:1px solid #eedaf1; border-radius:20px; text-align:center; box-shadow:0 16px 48px rgba(112,66,161,.10); }
+.go-auth-exit-title { color:#7042a1; font-weight:700; }
+.go-auth-exit-info { color:#665769; margin-top:12px; }
+.go-auth-exit-button { display:block; width:100%; border:0; border-radius:10px; margin:25px 0 15px; padding:13px; background:#7042a1; color:white; font-weight:700; font:inherit; cursor:pointer; }
+.go-auth-exit-button:hover { background:#583181; }
+.go-auth-exit-back { color:#7042a1; font-weight:600; }

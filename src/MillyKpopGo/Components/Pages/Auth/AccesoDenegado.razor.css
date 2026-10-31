@@ -1,0 +1,4 @@
+.go-denied-card { background:white; padding:30px; border:1px solid #eedaf1; border-radius:20px; text-align:center; box-shadow:0 16px 48px rgba(112,66,161,.10); }
+.go-denied-title { color:#7042a1; font-weight:700; }
+.go-denied-card p { margin:18px 0; color:#665769; }
+.go-denied-card a { color:#7042a1; font-weight:600; }

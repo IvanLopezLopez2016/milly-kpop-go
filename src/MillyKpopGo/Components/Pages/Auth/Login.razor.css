@@ -1,0 +1,12 @@
+.go-auth-card { border-radius: 20px; background: white; padding: 30px; border: 1px solid #eedaf1; box-shadow: 0 16px 48px rgba(112,66,161,.10); }
+.go-auth-heading { color: #7042a1; font-size: 25px; font-weight: 800; text-align: center; letter-spacing: .3px; }
+.go-auth-subtitle { text-align: center; color: #665769; margin: 10px 0 20px; }
+.go-auth-label { display:block; font-weight: 600; margin: 16px 0 6px; color: #423449; }
+.go-auth-input { display:block; width:100%; box-sizing:border-box; padding:12px 14px; border:1px solid #d8c6ed; border-radius:10px; font:inherit; background:#fff; color:#30212b; }
+.go-auth-input:focus { outline:2px solid #a885cf; outline-offset:1px; }
+.go-auth-primary { display:block; width:100%; margin-top:24px; padding:12px 16px; background:#7042a1; color:white; border:0; border-radius:10px; font:inherit; font-weight:700; cursor:pointer; }
+.go-auth-primary:hover { background:#583181; }
+.go-auth-bottom { text-align:center; margin:20px 0 0; }
+.go-auth-bottom a { color:#7042a1; font-weight:600; }
+.go-auth-error { background:#fff0f2; color:#a41e47; border:1px solid #f4bfcd; border-radius:9px; padding:12px; margin:14px 0; }
+@media (max-width:480px) { .go-auth-card { padding:23px 18px; } .go-auth-heading { font-size:21px; } }
