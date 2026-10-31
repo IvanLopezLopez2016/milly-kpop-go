@@ -41,9 +41,9 @@
         </div>
         <MudAlert Severity="Severity.Info" Class="mb-4">Tu saldo a favor se descuenta del pendiente neto, aunque todavía no esté asignado a un artículo específico. Los importes no incluyen cargos futuros.</MudAlert>
         <nav class="go9-tab-links" aria-label="Secciones de mi cuenta">
-            <a href="/mi-cuenta?tab=articulos" data-enhance-nav="false" class="@(TabActual == "articulos" ? "go9-tab-active" : "")" aria-current="@(TabActual == "articulos" ? "page" : null)">Mis artículos</a>
-            <a href="/mi-cuenta?tab=cargos" data-enhance-nav="false" class="@(TabActual == "cargos" ? "go9-tab-active" : "")" aria-current="@(TabActual == "cargos" ? "page" : null)">Cargos (@Vista.Cargos.Count)</a>
-            <a href="/mi-cuenta?tab=abonos" data-enhance-nav="false" class="@(TabActual == "abonos" ? "go9-tab-active" : "")" aria-current="@(TabActual == "abonos" ? "page" : null)">Mis abonos (@Vista.Pagos.Count)</a>
+            <a href="/mi-cuenta?tab=articulos" class="@(TabActual == "articulos" ? "go9-tab-active" : "")" aria-current="@(TabActual == "articulos" ? "page" : null)">Mis artículos</a>
+            <a href="/mi-cuenta?tab=cargos" class="@(TabActual == "cargos" ? "go9-tab-active" : "")" aria-current="@(TabActual == "cargos" ? "page" : null)">Cargos (@Vista.Cargos.Count)</a>
+            <a href="/mi-cuenta?tab=abonos" class="@(TabActual == "abonos" ? "go9-tab-active" : "")" aria-current="@(TabActual == "abonos" ? "page" : null)">Mis abonos (@Vista.Pagos.Count)</a>
         </nav>
         <section class="go9-tab-content">
             @if (TabActual == "articulos")
@@ -89,7 +89,4 @@
 <div class="row">
     <div class="row-1">    <MudImage Fluid="true" Src="imagenes/tc1.png" Width="500" Height="350" Alt="Milly K-POP" Class="rounded-lg centrado" />
 </div>
-    <div class="row-2">     <MudImage Fluid="true" Src="imagenes/tc2.png" Width="500" Height="350" Alt="Milly K-POP" Class="rounded-lg centrado" />
-</div>
-
 </div>
