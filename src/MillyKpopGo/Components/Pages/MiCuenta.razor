@@ -6,7 +6,7 @@
 <PageTitle>Mi cuenta · Milly K-Pop GO</PageTitle>
 <MudThemeProvider /><MudPopoverProvider /><MudDialogProvider /><MudSnackbarProvider />
 <section class="go9-portal">
- <div class="go9-top"><div><MudText Typo="Typo.overline" Color="Color.Primary">MILLY K-POP GO</MudText><MudText Typo="Typo.h4">Mi cuenta</MudText><MudText Color="Color.Secondary">@Nombre · Mis compras y pagos</MudText></div><div class="go9-actions"><MudButton Href="/mi-cuenta" Color="Color.Primary" Variant="Variant.Outlined">Actualizar</MudButton><MudButton Href="/logout" Color="Color.Secondary" Variant="Variant.Text">Cerrar sesión</MudButton></div></div>
+ <div class="go9-top"><div><MudText Typo="Typo.h4">Mi cuenta</MudText><MudText Color="Color.Primary">@Nombre </MudText><MudText Color="Color.Secondary">Mis compras y pagos</MudText></div><div class="go9-actions"><MudButton Href="/mi-cuenta" Color="Color.Primary" Variant="Variant.Outlined">Actualizar</MudButton></div></div>
  @if (Error is not null) { <MudAlert Severity="Severity.Error" Class="mb-4">@Error</MudAlert> }
  else if (Loading) { <MudProgressLinear Indeterminate="true" Class="mb-4" /> }
  else {
