@@ -76,14 +76,14 @@ public sealed class PagosVista
     public decimal PendienteDetalle(PagoDetalle d) => d.Cantidad*d.PrecioUnitario - AplicadoDetalle(d.Id);
     public decimal PendienteCargo(PagoCargo c) => c.Monto - AplicadoCargo(c.Id);
     public decimal TotalProductos => Detalles.Where(x=>x.Estado!="CANCELADO").Sum(x=>x.Cantidad*x.PrecioUnitario);
-    public decimal TotalCargos => Cargos.Sum(x=>x.Monto);
+    public decimal TotalCargos => Cargos.Where(c => Detalles.Any(d => d.Id == c.PedidoDetalleId && d.Estado != "CANCELADO")).Sum(x=>x.Monto);
     public decimal TotalRecibido => Pagos.Sum(x=>x.Monto);
     public decimal SaldoFavor => TotalRecibido - Aplicaciones.Sum(x=>x.Monto);
-    public decimal PendienteAsignar => Detalles.Where(x=>x.Estado!="CANCELADO").Sum(PendienteDetalle) + Cargos.Sum(PendienteCargo);
+    public decimal PendienteAsignar => Detalles.Where(x=>x.Estado!="CANCELADO").Sum(PendienteDetalle) + Cargos.Where(c => Detalles.Any(d => d.Id == c.PedidoDetalleId && d.Estado != "CANCELADO")).Sum(PendienteCargo);
     public decimal PendienteNeto => Math.Max(0,PendienteAsignar-SaldoFavor);
     public List<PagoAbono> Disponibles => Pagos.Where(x=>Disponible(x)>0).ToList();
     public List<PagoDetalle> DetallesPendientes => Detalles.Where(x=>x.Estado!="CANCELADO" && PendienteDetalle(x)>0).ToList();
-    public List<PagoCargo> CargosPendientes => Cargos.Where(x=>PendienteCargo(x)>0).ToList();
+    public List<PagoCargo> CargosPendientes => Cargos.Where(x=>Detalles.Any(d=>d.Id==x.PedidoDetalleId && d.Estado!="CANCELADO") && PendienteCargo(x)>0).ToList();
 }
 public sealed class PagoComprador { public Guid Id {get;set;} public string? Nombre {get;set;} public string? Alias {get;set;} public bool Activo {get;set;} }
 public sealed class PagoAbono { public Guid Id {get;set;} public decimal Monto {get;set;} public DateTimeOffset Fecha {get;set;} public string? Metodo {get;set;} public string? Referencia {get;set;} [JsonPropertyName("nota_interna")] public string? NotaInterna {get;set;} }

@@ -166,7 +166,7 @@ public sealed class PortalVista
     public decimal PagadoCargo(Guid id) => Aplicaciones.Where(a => a.CargoId == id).Sum(a => a.Monto);
     public decimal DisponiblePago(Guid id) => Pagos.FirstOrDefault(p => p.Id == id)?.Monto - Aplicaciones.Where(a => a.PagoId == id).Sum(a => a.Monto) ?? 0;
     public decimal TotalArticulos => Detalles.Where(d => d.Estado != "CANCELADO").Sum(d => d.Cantidad * d.PrecioUnitario);
-    public decimal TotalCargos => Cargos.Sum(c => c.Monto);
+    public decimal TotalCargos => Cargos.Where(c => Detalles.Any(d => d.Id == c.PedidoDetalleId && d.Estado != "CANCELADO")).Sum(c => c.Monto);
     public decimal TotalPagos => Pagos.Sum(p => p.Monto);
     public decimal SaldoAFavor => TotalPagos - Aplicaciones.Sum(a => a.Monto);
     public decimal PendientePorAplicar => Detalles.Where(d => d.Estado != "CANCELADO").Sum(d => Math.Max(0, d.Cantidad * d.PrecioUnitario - PagadoDetalle(d.Id)))

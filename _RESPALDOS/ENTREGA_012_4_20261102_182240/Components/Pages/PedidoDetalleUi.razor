@@ -1,0 +1,13 @@
+@inherits PedidosCajasBase
+@page "/admin/pedidos/{Id:guid}"
+@rendermode InteractiveServer
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = "ADMIN")]
+@using MudBlazor
+<PageTitle>Detalle de pedido · Milly K-Pop GO</PageTitle>
+<MudThemeProvider /><MudPopoverProvider /><MudDialogProvider /><MudSnackbarProvider />
+<section class="go84"><MudButton Href="/admin/pedidos" Variant="Variant.Text">Volver a pedidos</MudButton><MudText Typo="Typo.h4" Class="mb-3">Detalle del pedido</MudText>
+@if (Error is not null) { <MudAlert Severity="Severity.Error">@Error</MudAlert> }
+else if (Loading) { <MudProgressLinear Indeterminate="true" /> }
+else if (Pedido is null) { <MudAlert Severity="Severity.Warning">No existe el pedido solicitado.</MudAlert> }
+else { <MudPaper Class="pa-4 mb-4" Elevation="0"><MudText Typo="Typo.h6">@View.Comprador(Pedido.CompradorId)</MudText><MudText Color="Color.Secondary">@Pedido.Fecha.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</MudText><MudText>@Pedido.NotaInterna</MudText></MudPaper><MudPaper Class="pa-4" Elevation="0"><MudTable Items="Items" Dense="true" Hover="true"><HeaderContent><MudTh>Artículo</MudTh><MudTh>Cantidad</MudTh><MudTh>Precio</MudTh><MudTh>Subtotal</MudTh><MudTh>Estado</MudTh></HeaderContent><RowTemplate><MudTd DataLabel="Artículo">@View.Articulo(context.ArticuloId)</MudTd><MudTd DataLabel="Cantidad">@context.Cantidad</MudTd><MudTd DataLabel="Precio">@Money(context.PrecioUnitario)</MudTd><MudTd DataLabel="Subtotal">@Money(context.Cantidad * context.PrecioUnitario)</MudTd><MudTd DataLabel="Estado">@context.Estado</MudTd></RowTemplate></MudTable><MudText Typo="Typo.h6" Class="mt-3">Total: @Money(Total)</MudText></MudPaper>}
+</section>

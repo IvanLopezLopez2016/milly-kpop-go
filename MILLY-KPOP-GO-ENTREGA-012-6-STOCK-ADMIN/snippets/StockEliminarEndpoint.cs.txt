@@ -1,0 +1,13 @@
+    private static async Task<IResult> Eliminar(HttpContext ctx, IAntiforgery antiforgery, IHttpClientFactory factory, IConfiguration config)
+    {
+        if (!await Validar(ctx, antiforgery)) return Results.BadRequest("Token de formulario no válido.");
+        var form = await ctx.Request.ReadFormAsync();
+        if (!Guid.TryParse(form["stock_id"], out var stockId))
+            return Results.Redirect("/admin/stock?resultado=datos");
+        using var http = await Client(ctx, factory, config);
+        if (http is null) return Results.Redirect("/login");
+        using var result = await http.PostAsJsonAsync("rpc/retirar_stock_go", new { p_stock_id = stockId });
+        return Results.Redirect(result.IsSuccessStatusCode
+            ? "/admin/stock?resultado=eliminado"
+            : "/admin/stock?resultado=error");
+    }

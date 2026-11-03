@@ -33,6 +33,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.SlidingExpiration = false;
     });
 builder.Services.AddHttpClient();
+builder.Services.AddScoped<MillyKpopGo.Stock.StockUiService>();
 builder.Services.AddScoped<MillyKpopGo.Administradores.AdministradoresService>();
 builder.Services.AddScoped<CodigosAccesoService>();
 builder.Services.AddRateLimiter(options => {
@@ -93,6 +94,8 @@ app.Use(async (ctx, next) =>
     }
     await next();
 });
+MillyKpopGo.Pedidos.PedidoEliminarEndpoints.MapEliminarPedidoArticuloEndpoints(app);
+MillyKpopGo.Stock.StockEndpoints.MapStockEndpoints(app);
 app.MapStaticAssets();
 app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 app.Run();

@@ -1,0 +1,61 @@
+@page "/admin"
+@rendermode InteractiveServer
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = "ADMIN")]
+@using MudBlazor
+
+<PageTitle>Administración · Milly K-Pop GO</PageTitle>
+
+<MudThemeProvider />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<div class="milly-admin">
+    <header class="milly-admin-header">
+        <div>
+            <h1>Panel administrativo</h1>
+            <p class="milly-subtitle">Compradoras, pedidos, pagos y seguimiento en un solo lugar.</p>
+        </div>
+    </header>
+
+    <div class="milly-module-grid">
+        <MudPaper Class="milly-module milly-module-dashboard" Elevation="0">
+            <MudIcon Icon="@Icons.Material.Filled.Dashboard" Color="Color.Primary" Size="Size.Large" />
+            <h2>Dashboard</h2><p>Ventas, abonos, adeudos y seguimiento general de tu GO.</p>
+            <MudButton Href="/admin/dashboard" Variant="Variant.Filled" Color="Color.Primary">Ver dashboard</MudButton>
+        </MudPaper>
+        <MudPaper Class="milly-module" Elevation="0">
+            <MudIcon Icon="@Icons.Material.Filled.People" Color="Color.Primary" Size="Size.Large" />
+            <h2>Compradores</h2><p>Registrar, buscar y editar compradores.</p>
+            <MudButton Href="/admin/compradores" Variant="Variant.Filled" Color="Color.Primary">Abrir compradores</MudButton>
+        </MudPaper>
+        
+        <MudPaper Class="milly-module" Elevation="0">
+            <MudIcon Icon="@Icons.Material.Filled.ShoppingBag" Color="Color.Primary" Size="Size.Large" />
+            <h2>Pedidos</h2><p>Encargos y asignaciones por comprador.</p>
+            <MudButton Href="/admin/pedidos" Variant="Variant.Filled" Color="Color.Primary">Abrir pedidos</MudButton>
+        </MudPaper>
+        <MudPaper Class="milly-module" Elevation="0">
+            <MudIcon Icon="@Icons.Material.Filled.LocalShipping" Color="Color.Primary" Size="Size.Large" />
+            <h2>Cajas internacionales</h2><p>Rastreo y asignación de artículos a cajas.</p>
+            <MudButton Href="/admin/cajas" Variant="Variant.Filled" Color="Color.Primary">Abrir cajas</MudButton>
+        </MudPaper>
+        <MudPaper Class="milly-module" Elevation="0">
+            <MudIcon Icon="@Icons.Material.Filled.Payments" Color="Color.Primary" Size="Size.Large" />
+            <h2>Pagos</h2><p>Abonos, aplicaciones y saldo disponible.</p>
+            <MudButton Href="/admin/pagos" Variant="Variant.Filled" Color="Color.Primary">Abrir pagos</MudButton>
+        </MudPaper>
+        <MudPaper Class="milly-module" Elevation="0">
+            <MudIcon Icon="@Icons.Material.Filled.ReceiptLong" Color="Color.Primary" Size="Size.Large" />
+            <h2>Logística</h2><p>EMS, aduana, estados y entregas.</p>
+            <MudButton Href="/admin/logistica" Variant="Variant.Filled" Color="Color.Primary">Abrir logística</MudButton>
+        </MudPaper>
+        <MudPaper Class="milly-module" Elevation="0">
+            <MudIcon Icon="@Icons.Material.Filled.AdminPanelSettings" Color="Color.Primary" Size="Size.Large" />
+            <h2>Administradores</h2><p>Crear accesos administrativos adicionales.</p>
+            <MudButton Href="/admin/administradores" Variant="Variant.Filled" Color="Color.Primary">Abrir administradores</MudButton>
+        </MudPaper>
+    </div>
+
+
+</div>

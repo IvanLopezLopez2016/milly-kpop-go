@@ -25,6 +25,10 @@
     background: #7042A1;
     color: white;
 }
+
+    .contenedor-padre {
+        text-align: center;
+    }
     </style>
 <PageTitle>Mi cuenta · Milly K-Pop GO</PageTitle>
 <MudThemeProvider />
@@ -80,7 +84,7 @@
         <section class="go9-tab-content">
             @if (TabActual == "articulos")
             {
-                <MudTable Items="Vista.Detalles" Hover="true" Dense="true" Breakpoint="Breakpoint.Sm" RowsPerPage="10">
+                <MudTable Items="@Vista.Detalles.Where(d => d.Estado != "CANCELADO")" Hover="true" Dense="true" Breakpoint="Breakpoint.Sm" RowsPerPage="10">
                     <HeaderContent><MudTh>Artículo</MudTh><MudTh>Cantidad</MudTh><MudTh>Caja</MudTh><MudTh>Estado</MudTh><MudTh>Entrega</MudTh><MudTh>Importe</MudTh><MudTh>Saldo</MudTh></HeaderContent>
                     <RowTemplate>
                         <MudTd DataLabel="Artículo"><strong>@Vista.Articulo(context.ArticuloId)</strong>@if(!string.IsNullOrWhiteSpace(context.NotaPublica)){
@@ -99,7 +103,7 @@
         }
         @if (TabActual == "cargos")
         {
-            <MudTable Items="Vista.Cargos" Hover="true" Dense="true" RowsPerPage="10">
+            <MudTable Items="@Vista.Cargos.Where(c => Vista.Detalles.Any(d => d.Id == c.PedidoDetalleId && d.Estado != "CANCELADO"))" Hover="true" Dense="true" RowsPerPage="10">
                 <HeaderContent><MudTh>Artículo</MudTh><MudTh>Concepto</MudTh><MudTh>Descripción</MudTh><MudTh>Monto</MudTh><MudTh>Pendiente</MudTh></HeaderContent>
                 <RowTemplate><MudTd DataLabel="Artículo">@NombreCargo(context.PedidoDetalleId)</MudTd><MudTd DataLabel="Concepto">@Etiqueta(context.Tipo)</MudTd><MudTd DataLabel="Descripción">@context.Descripcion</MudTd><MudTd DataLabel="Monto">@Dinero(context.Monto)</MudTd><MudTd DataLabel="Pendiente">@Dinero(Math.Max(0, context.Monto - Vista.PagadoCargo(context.Id)))</MudTd></RowTemplate>
                 <NoRecordsContent>No tienes cargos adicionales.</NoRecordsContent><PagerContent><MudTablePager PageSizeOptions="new int[] { 10, 20, 50 }" /></PagerContent>
@@ -115,11 +119,16 @@
         }
     </section>
     <MudText Color="Color.Secondary" Class="mt-4">Este portal es de consulta. Para aclaraciones o comprobantes, contacta a la administración de Milly K-Pop GO.</MudText>
+
 }
 
 </section>
+<div class="contenedor-padre">
+    <MudButton Href="/stock-disponible" Variant="Variant.Outlined" Color="Color.Primary" Class="mb-3 centrado-boton">Ver Stock disponible</MudButton>
+</div>
 <div class="row">
     <div class="row-1">    
+
         <MudImage Fluid="true" Src="imagenes/tc1.png" Width="500" Height="350" Alt="Milly K-POP" Class="rounded-lg centrado" />
 </div>
     <div class="row-1">

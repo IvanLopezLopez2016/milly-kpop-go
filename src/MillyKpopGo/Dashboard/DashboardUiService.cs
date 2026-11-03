@@ -68,29 +68,43 @@ public sealed class DashboardUiService(IHttpClientFactory factory, IConfiguratio
         var resumen = new DashboardResumen
         {
             CompradorasActivas = compradores.Count(c => c.Activo),
-            Pedidos = pedidos.Count,
+            Pedidos = validDetails.Select(d => d.PedidoId).Distinct().Count(),
             ArticulosPendientes = validDetails.Count(d => !delivered.Contains(d.Estado ?? "")),
             ArticulosEntregados = validDetails.Count(d => delivered.Contains(d.Estado ?? "")),
             CajasActivas = cajas.Count(c => !delivered.Contains(c.Estado ?? "") && !cancelled.Contains(c.Estado ?? "")),
             VentasArticulos = validDetails.Sum(d => d.Cantidad * d.PrecioUnitario),
-            TotalCargos = cargos.Sum(c => c.Monto),
+            TotalCargos = cargos.Where(c => detallesIds.Contains(c.PedidoDetalleId)).Sum(c => c.Monto),
             PagosRecibidos = pagos.Sum(p => p.Monto),
             // Aplicaciones por conceptos para distinguir deuda pendiente y fondos disponibles.
             SaldoSinAplicar = pagos.Sum(p => p.Monto) - aplicaciones.Sum(a => a.Monto)
         };
-        resumen.PendienteNeto = Math.Max(0m, resumen.VentasArticulos + resumen.TotalCargos - resumen.PagosRecibidos);
+        
         resumen.CajasPorOrigen = cajas.GroupBy(c => string.IsNullOrWhiteSpace(c.Origen) ? "SIN ORIGEN" : c.Origen!)
             .OrderBy(g => g.Key).Select(g => new DashboardGrupo(g.Key, g.Count())).ToList();
         resumen.ArticulosPorEstado = detalles.GroupBy(d => string.IsNullOrWhiteSpace(d.Estado) ? "SIN ESTADO" : d.Estado!)
             .OrderByDescending(g => g.Count()).Select(g => new DashboardGrupo(g.Key.Replace('_', ' '), g.Count())).ToList();
 
+        // Solo se descuentan abonos aplicados al articulo ACTIVO o pagos aun sin aplicar.
+        // Los aplicados a CANCELADO se conservan como retenidos, sin transferir deuda.
         var deuda = new Dictionary<Guid, decimal>();
         foreach (var d in validDetails)
-            if (detalleOwner.TryGetValue(d.Id, out var owner)) deuda[owner] = deuda.GetValueOrDefault(owner) + d.Cantidad * d.PrecioUnitario;
-        foreach (var c in cargos)
-            if (cargoOwner.TryGetValue(c.Id, out var owner)) deuda[owner] = deuda.GetValueOrDefault(owner) + c.Monto;
+        {
+            if (!detalleOwner.TryGetValue(d.Id, out var owner)) continue;
+            var aplicado = aplicaciones.Where(a => a.PedidoDetalleId == d.Id).Sum(a => a.Monto);
+            deuda[owner] = deuda.GetValueOrDefault(owner) + Math.Max(0m, d.Cantidad * d.PrecioUnitario - aplicado);
+        }
+        foreach (var c in cargos.Where(c => detallesIds.Contains(c.PedidoDetalleId)))
+        {
+            if (!cargoOwner.TryGetValue(c.Id, out var owner)) continue;
+            var aplicado = aplicaciones.Where(a => a.CargoId == c.Id).Sum(a => a.Monto);
+            deuda[owner] = deuda.GetValueOrDefault(owner) + Math.Max(0m, c.Monto - aplicado);
+        }
         foreach (var p in pagos)
-            deuda[p.CompradorId] = deuda.GetValueOrDefault(p.CompradorId) - p.Monto;
+        {
+            var noAplicado = Math.Max(0m, p.Monto - aplicaciones.Where(a => a.PagoId == p.Id).Sum(a => a.Monto));
+            deuda[p.CompradorId] = deuda.GetValueOrDefault(p.CompradorId) - noAplicado;
+        }
+        resumen.PendienteNeto = deuda.Values.Sum(v => Math.Max(0m, v));
         resumen.CompradorasConAdeudo = compradores
             .Where(c => deuda.GetValueOrDefault(c.Id) > 0.009m)
             .Select(c => new DashboardAdeudo(c.Id, c.Alias is { Length: > 0 } ? c.Alias : c.Nombre ?? "Compradora", deuda[c.Id]))

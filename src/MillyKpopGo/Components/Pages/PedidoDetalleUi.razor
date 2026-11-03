@@ -5,9 +5,56 @@
 @using MudBlazor
 <PageTitle>Detalle de pedido · Milly K-Pop GO</PageTitle>
 <MudThemeProvider /><MudPopoverProvider /><MudDialogProvider /><MudSnackbarProvider />
-<section class="go84"><MudButton Href="/admin/pedidos" Variant="Variant.Text">Volver a pedidos</MudButton><MudText Typo="Typo.h4" Class="mb-3">Detalle del pedido</MudText>
+<section class="go84">@if (Eliminacion == "ok") { <MudAlert Severity="Severity.Success">ArtÃ­culo eliminado. El total del pedido se actualizÃ³.</MudAlert> }
+@if (Eliminacion == "movimientos") { <MudAlert Severity="Severity.Warning">No se puede eliminar este artÃ­culo: ya tiene cargos o pagos aplicados.</MudAlert> }
+@if (Eliminacion == "noencontrado") { <MudAlert Severity="Severity.Warning">El artÃ­culo ya no existe en este pedido.</MudAlert> }
+@if (Eliminacion == "error") { <MudAlert Severity="Severity.Error">No se pudo eliminar el artÃ­culo. Verifica que ejecutaste el SQL de la entrega y que tu sesiÃ³n siga activa.</MudAlert> }<MudButton Href="/admin/pedidos" Variant="Variant.Text">Volver a pedidos</MudButton><MudText Typo="Typo.h4" Class="mb-3">Detalle del pedido</MudText>
 @if (Error is not null) { <MudAlert Severity="Severity.Error">@Error</MudAlert> }
 else if (Loading) { <MudProgressLinear Indeterminate="true" /> }
 else if (Pedido is null) { <MudAlert Severity="Severity.Warning">No existe el pedido solicitado.</MudAlert> }
-else { <MudPaper Class="pa-4 mb-4" Elevation="0"><MudText Typo="Typo.h6">@View.Comprador(Pedido.CompradorId)</MudText><MudText Color="Color.Secondary">@Pedido.Fecha.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</MudText><MudText>@Pedido.NotaInterna</MudText></MudPaper><MudPaper Class="pa-4" Elevation="0"><MudTable Items="Items" Dense="true" Hover="true"><HeaderContent><MudTh>Artículo</MudTh><MudTh>Cantidad</MudTh><MudTh>Precio</MudTh><MudTh>Subtotal</MudTh><MudTh>Estado</MudTh></HeaderContent><RowTemplate><MudTd DataLabel="Artículo">@View.Articulo(context.ArticuloId)</MudTd><MudTd DataLabel="Cantidad">@context.Cantidad</MudTd><MudTd DataLabel="Precio">@Money(context.PrecioUnitario)</MudTd><MudTd DataLabel="Subtotal">@Money(context.Cantidad * context.PrecioUnitario)</MudTd><MudTd DataLabel="Estado">@context.Estado</MudTd></RowTemplate></MudTable><MudText Typo="Typo.h6" Class="mt-3">Total: @Money(Total)</MudText></MudPaper>}
+else { <MudPaper Class="pa-4 mb-4" Elevation="0"><MudText Typo="Typo.h6">@View.Comprador(Pedido.CompradorId)</MudText><MudText Color="Color.Secondary">@Pedido.Fecha.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</MudText><MudText>@Pedido.NotaInterna</MudText></MudPaper><MudPaper Class="pa-4" Elevation="0"><MudTable Items="Items" Dense="true" Hover="true"><HeaderContent><MudTh>Artículo</MudTh><MudTh>Cantidad</MudTh><MudTh>Precio</MudTh><MudTh>Subtotal</MudTh><MudTh>Estado</MudTh><MudTh>Acciones</MudTh></HeaderContent><RowTemplate><MudTd DataLabel="Artículo">@View.Articulo(context.ArticuloId)</MudTd><MudTd DataLabel="Cantidad">@context.Cantidad</MudTd><MudTd DataLabel="Precio">@Money(context.PrecioUnitario)</MudTd><MudTd DataLabel="Subtotal">@Money(context.Cantidad * context.PrecioUnitario)</MudTd><MudTd DataLabel="Estado">@context.Estado</MudTd><MudTd DataLabel="Acciones">
+    <MudButton Variant="Variant.Outlined" Color="Color.Error" Size="Size.Small" OnClick="@(() => SolicitarEliminar(context))">Eliminar</MudButton>
+</MudTd></RowTemplate></MudTable><MudText Typo="Typo.h6" Class="mt-3">Total: @Money(Total)</MudText></MudPaper>}
 </section>
+
+<div class="go125-confirmacion">
+<MudDialog @bind-Visible="ConfirmarVisible">
+    <DialogContent>
+        <MudText Typo="Typo.h6">Â¿Eliminar este artÃ­culo?</MudText>
+        <MudText>Â¿Deseas quitar <strong>@(ParaEliminar is null ? "el artÃ­culo" : View.Articulo(ParaEliminar.ArticuloId))</strong> de este pedido?</MudText>
+        @if (ParaEliminar?.Estado == "PEDIDO") { <MudText Color="Color.Secondary">Como ya estÃ¡ PEDIDO, pasarÃ¡ a Stock.</MudText> }
+        @if (ParaEliminar?.Estado == "EN_ESPERA") { <MudText Color="Color.Secondary">EstÃ¡ EN ESPERA, asÃ­ que no pasarÃ¡ a Stock.</MudText> }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="@(() => ConfirmarVisible = false)" Variant="Variant.Text">Cancelar</MudButton>
+        @if (ParaEliminar is not null)
+        {
+            <form method="post" action="@($"/admin/pedidos/{Id:D}/articulos/{ParaEliminar.Id:D}/eliminar")" data-enhance="false">
+                <AntiforgeryToken />
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Error" Variant="Variant.Filled">Confirmar</MudButton>
+            </form>
+        }
+    </DialogActions>
+</MudDialog>
+<MudDialog @bind-Visible="AvisoVisible">
+    <DialogContent>
+        <MudText Typo="Typo.h6">ArtÃ­culo con movimientos</MudText>
+        <MudAlert Severity="Severity.Warning">No se puede eliminar este artÃ­culo: ya tiene cargos o pagos aplicados.</MudAlert>
+        <MudText>Los abonos quedan retenidos en el historial de este artÃ­culo, no se devuelven ni se aplican a otros.</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="@(() => AvisoVisible = false)" Variant="Variant.Text">Aceptar</MudButton>
+        @if (DetalleMovimiento != Guid.Empty && ArticuloConMovimiento is not null)
+        {
+            <form method="post" action="@($"/admin/pedidos/{Id:D}/articulos/{DetalleMovimiento:D}/eliminar")" data-enhance="false">
+                <AntiforgeryToken />
+                <input type="hidden" name="aceptar_movimientos" value="true" />
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled">@(ArticuloConMovimiento.Estado == "PEDIDO" ? "Pasar a Stock" : "Eliminar sin Stock")</MudButton>
+            </form>
+        }
+    </DialogActions>
+</MudDialog>
+@if (Eliminacion == "stock") { <MudAlert Severity="Severity.Success">ArtÃ­culo retirado del pedido y enviado a Stock.</MudAlert> }
+@if (Eliminacion == "ok") { <MudAlert Severity="Severity.Success">ArtÃ­culo eliminado del pedido.</MudAlert> }
+@if (Eliminacion == "error") { <MudAlert Severity="Severity.Error">No se pudo realizar la operaciÃ³n. Verifica el estado del artÃ­culo.</MudAlert> }
+</div>
