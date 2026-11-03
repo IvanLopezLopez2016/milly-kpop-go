@@ -1,0 +1,91 @@
+@page "/stock-disponible"
+@rendermode InteractiveServer
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = "CLIENTE")]
+@using MudBlazor
+@using MillyKpopGo.Stock
+
+<PageTitle>Stock disponible · Milly K-Pop GO</PageTitle>
+
+<section class="stock-shell">
+    <MudContainer MaxWidth="MaxWidth.Medium" Class="stock-container">
+        <div class="stock-topbar">
+            <MudButton Href="/mi-cuenta"
+                       Variant="Variant.Text"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.ArrowBack">
+                Volver a Mi cuenta
+            </MudButton>
+        </div>
+
+        <div class="stock-heading">
+            <div class="stock-heading-icon">✦</div>
+            <MudText Typo="Typo.h4" Class="stock-title">Stock disponible</MudText>
+            <MudText Class="stock-description">
+                ¡Quizá aquí encuentres tu próximo favorito! Si algo te interesa,
+                contacta a MILLY K-POP GO para apartarlo.
+            </MudText>
+        </div>
+
+        @if (Error is not null)
+        {
+            <MudAlert Severity="Severity.Error" Class="mb-4">@Error</MudAlert>
+        }
+        else if (Loading)
+        {
+            <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+        }
+        else if (!Vista.Articulos.Any())
+        {
+            <MudPaper Class="stock-empty" Elevation="0">
+                <div class="stock-empty-icon">✦</div>
+                <MudText Typo="Typo.h6">Por ahora no hay artículos disponibles</MudText>
+                <MudText>Vuelve pronto para descubrir las novedades.</MudText>
+            </MudPaper>
+        }
+        else
+        {
+            <MudPaper Class="stock-card" Elevation="0">
+                <div class="stock-card-heading">
+                    <div>
+                        <MudText Typo="Typo.h6" Class="stock-card-title">Artículos disponibles</MudText>
+                        <MudText Class="stock-card-subtitle">Precios en pesos mexicanos (MXN)</MudText>
+                    </div>
+                    <span class="stock-count">@Vista.Articulos.Count artículo(s)</span>
+                </div>
+
+                <MudTable T="StockItem"
+                          Items="Vista.Articulos"
+                          Dense="true"
+                          Hover="true"
+                          Elevation="0"
+                          Breakpoint="Breakpoint.Sm"
+                          RowsPerPage="5"
+                          Class="stock-table">
+                    <HeaderContent>
+                        <MudTh>Artículo</MudTh>
+                        <MudTh>Disponibles</MudTh>
+                        <MudTh>Precio unitario</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Artículo">
+                            <span class="stock-name">@context.Nombre</span>
+                        </MudTd>
+                        <MudTd DataLabel="Disponibles">
+                            <span class="stock-quantity">@context.CantidadDisponible</span>
+                        </MudTd>
+                        <MudTd DataLabel="Precio unitario">
+                            <span class="stock-price">@Money(context.PrecioUnitario)</span>
+                        </MudTd>
+                    </RowTemplate>
+                    <PagerContent>
+                        <MudTablePager PageSizeOptions="@(new int[] { 5, 10, 20 })"
+                                       RowsPerPageString="Artículos por página"
+                                       InfoFormat="{first_item}-{last_item} de {all_items}" />
+                    </PagerContent>
+                </MudTable>
+            </MudPaper>
+
+            <p class="stock-note">¿Te interesó alguno? Escríbenos para consultar cómo apartarlo. 💜</p>
+        }
+    </MudContainer>
+</section>

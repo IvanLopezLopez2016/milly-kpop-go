@@ -17,10 +17,5 @@ public partial class StockAdmin
     }
     protected void CerrarAsignacion() => AsignarVisible = false;
 
-    protected void AbrirEliminar(StockItem item)
-    {
-        ArticuloEliminar = item;
-        EliminarVisible = true;
-    }
     protected void CerrarEliminar() => EliminarVisible = false;
 }

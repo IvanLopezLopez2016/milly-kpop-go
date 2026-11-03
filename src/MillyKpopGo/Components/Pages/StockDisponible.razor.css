@@ -93,3 +93,13 @@
     .stock-shell ::deep .stock-table .mud-table-body .mud-table-cell { padding: 10px 15px; }
     .stock-shell ::deep .stock-table .mud-table-pagination { flex-wrap: wrap; }
 }
+/* Tabla sin MudTablePager: no necesita MudPopoverProvider. */
+.stock-table-scroll { overflow-x:auto; }
+.stock-plain-table { width:100%; border-collapse:collapse; text-align:left; font-size:.9rem; }
+.stock-plain-table th { background:#7042A1; color:#fff; padding:13px 18px; font-weight:700; white-space:nowrap; }
+.stock-plain-table td { padding:13px 18px; border-bottom:1px solid #f0eaf5; }
+.stock-plain-table tbody tr:hover { background:#fbf8fe; }
+.stock-pager { display:flex; align-items:center; justify-content:flex-end; gap:12px; padding:14px 20px; color:#7042A1; font-size:.83rem; }
+.stock-pager button { background:white; border:1px solid #d8c6ed; color:#7042A1; border-radius:8px; padding:7px 12px; cursor:pointer; }
+.stock-pager button:disabled { opacity:.4; cursor:default; }
+@media(max-width:600px) { .stock-pager { justify-content:center; padding:12px; gap:7px; } .stock-plain-table th,.stock-plain-table td{ padding:11px 8px; font-size:.8rem; } }

@@ -1,38 +1,35 @@
-/* Stock administrativo: compacto, morado #7042A1 y blanco */
-.go-stock-admin { max-width: 980px; margin: 0 auto; padding-bottom: 36px; }
-.go-stock-heading { display:flex; align-items:center; justify-content:space-between; gap:16px; margin:4px 0 24px; flex-wrap:wrap; }
-.go-stock-eyebrow { color:#7042A1; letter-spacing:1.4px; }
-.go-stock-title { color:#7042A1; font-weight:750; }
-.go-stock-subtitle { color:#71687b; font-size:.91rem; margin-top:4px; }
-.go-stock-card { background:#fff; border:1px solid #ede4f5; border-radius:18px; box-shadow:0 5px 19px rgba(112,66,161,.07); }
-.go-stock-card-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px; flex-wrap:wrap; color:#7042A1; }
-.go-stock-hint, .go-stock-count { background:#f4effa; color:#7042A1; padding:5px 10px; border-radius:99px; font-size:.77rem; font-weight:700; }
-.go-stock-fields { display:grid; grid-template-columns:minmax(0,2fr) minmax(95px,.7fr) minmax(130px,1fr) minmax(0,1.5fr); gap:12px; }
-.go-stock-fields label, .go-stock-admin ::deep .go-stock-dialog-fields label { display:flex; flex-direction:column; gap:6px; font-size:.8rem; font-weight:600; color:#5b4d64; }
-.go-stock-fields input { width:100%; min-width:0; padding:10px 12px; border:1px solid #e5daed; border-radius:10px; color:#30212b; background:white; font:inherit; }
-.go-stock-fields input:focus { outline:2px solid #7042A1; outline-offset:1px; }
-.go-stock-add-action { display:flex; justify-content:flex-end; margin-top:15px; }
-.go-stock-table-card { overflow:hidden; }
-.go-stock-admin ::deep .go-stock-table .mud-table-container { border-radius:12px; }
-.go-stock-admin ::deep .go-stock-table .mud-table-head { background:#7042A1; }
-.go-stock-admin ::deep .go-stock-table .mud-table-head .mud-table-cell { background:#7042A1; color:white !important; font-weight:700; border:0; }
-.go-stock-admin ::deep .go-stock-table .mud-table-body .mud-table-cell { border-bottom:1px solid #f1ebf6; padding:10px 12px; }
-.go-stock-admin ::deep .go-stock-table .mud-table-row:hover { background:#faf7fd; }
-.go-stock-item-name { color:#34263b; font-weight:650; }
-.go-stock-item-note { color:#83768a; font-size:.75rem; margin-top:3px; }
-.go-stock-origin { color:#655873; font-size:.78rem; white-space:nowrap; }
-.go-stock-quantity { color:#7042A1; background:#f1ebf8; padding:4px 9px; border-radius:9px; font-weight:750; }
-.go-stock-price { color:#7042A1; font-weight:750; white-space:nowrap; }
-.go-stock-actions { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
-.go-stock-empty { text-align:center; padding:24px 0; color:#7a6c82; }
-/* Los diálogos de MudBlazor pueden montarse fuera del elemento con CSS aislado.
-   El estilo crítico del botón usa una clase global en el archivo css compartido o style en razor? 
-   Se utilizan botones nativos con estilo local por herencia en el formulario y el estilo global en este archivo no necesariamente alcanza portales. */
-.go-stock-dialog-submit { background:#7042A1; border:0; color:#fff; font:inherit; font-weight:650; padding:9px 16px; border-radius:9px; cursor:pointer; }
-.go-stock-dialog-delete { background:#b42353; }
-.go-stock-dialog-submit:disabled { opacity:.5; cursor:default; }
-.go-stock-dialog-fields { display:grid; gap:12px; }
-.go-stock-dialog-fields label { display:grid; gap:5px; font-size:.88rem; }
-.go-stock-dialog-fields input, .go-stock-dialog-fields select { width:100%; padding:9px; border:1px solid #decfe8; border-radius:9px; background:#fff; color:#30212b; }
-@media(max-width:800px) { .go-stock-fields { grid-template-columns:repeat(2,minmax(0,1fr)); } }
-@media(max-width:600px) { .go-stock-admin { padding-left:8px !important; padding-right:8px !important; } .go-stock-card { border-radius:14px; } .go-stock-fields { grid-template-columns:1fr; } .go-stock-heading { margin-bottom:16px; } .go-stock-admin ::deep .go-stock-table .mud-table-cell { padding:8px 10px; } .go-stock-actions { justify-content:flex-start; } }
+.go-stock-admin { max-width: 980px; margin: 0 auto; padding: 18px 12px 55px; color: #30212b; }
+.go-stock-admin-head { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:20px; }
+.go-stock-admin-head h4,.go-stock-admin h3 { color:#7042A1; }
+.go-stock-admin-head p { margin:4px 0; color:#75647e; }
+.go-stock-panel { background:#fff; padding:20px; margin-bottom:20px; border:1px solid #e9e0f2; border-radius:17px; box-shadow:0 6px 20px #7042a10c; }
+.go-stock-panel h3 { font-size:1.05rem; margin:0 0 15px; }
+.go-stock-fields { display:grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap:12px; }
+.go-stock-fields label,.go-stock-modal label { display:flex; flex-direction:column; gap:5px; font-size:.86rem; font-weight:600; }
+.go-stock-fields input,.go-stock-modal input,.go-stock-modal select { width:100%; min-width:0; background:white; padding:10px 11px; border:1px solid #decfe8; border-radius:9px; color:#30212b; }
+.go-stock-end { display:flex; justify-content:flex-end; margin-top:14px; }
+.go-stock-primary,.go-stock-delete { border:0; border-radius:9px; padding:10px 18px; font-weight:600; color:white; background:#7042A1; cursor:pointer; }
+.go-stock-delete { background:#b42353; }
+.go-stock-table-head { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.go-stock-table-head span { font-size:.8rem; background:#f5eefb; color:#7042A1; padding:5px 10px; border-radius:20px; }
+.go-stock-overflow { overflow-x:auto; }
+.go-stock-table { border-collapse:collapse; width:100%; font-size:.88rem; }
+.go-stock-table th { text-align:left; background:#7042A1; color:white; padding:12px; white-space:nowrap; }
+.go-stock-table td { padding:10px 12px; border-bottom:1px solid #eee5f2; vertical-align:middle; }
+.go-stock-table td small { display:block; color:#75647e; font-size:.75rem; margin-top:3px; }
+.go-stock-table tbody tr:hover { background:#fbf8fe; }
+.go-stock-count { border-radius:7px; background:#f5eefb; color:#7042A1; padding:4px 10px; font-weight:700; }
+.go-stock-price { font-weight:700; color:#7042A1; white-space:nowrap; }
+.go-stock-actions { display:flex; gap:7px; }
+.go-stock-actions button,.go-stock-pager button,.go-stock-modal-buttons button:not(.go-stock-primary):not(.go-stock-delete) { padding:7px 10px; background:white; color:#7042A1; border:1px solid #d8c6ed; border-radius:8px; cursor:pointer; }
+.go-stock-actions .go-stock-danger { color:#b42353; border-color:#f1bdd2; }
+.go-stock-pager { display:flex; justify-content:flex-end; align-items:center; gap:12px; margin-top:14px; font-size:.8rem; color:#7042A1; }
+.go-stock-pager button:disabled { opacity:.4; cursor:default; }
+.go-stock-shade { position:fixed; z-index:2000; inset:0; background:rgba(35,20,47,.55); display:flex; align-items:center; justify-content:center; padding:15px; }
+.go-stock-modal { width:min(100%,440px); max-height:90vh; overflow:auto; background:white; padding:24px; border-radius:17px; box-shadow:0 20px 75px #1f102b30; }
+.go-stock-modal h3 { color:#7042A1; margin:0 0 14px; }
+.go-stock-modal p { line-height:1.5; }
+.go-stock-modal form { display:grid; gap:13px; }
+.go-stock-warning { background:#fff5fa; padding:10px; border-radius:9px; font-size:.86rem; }
+.go-stock-modal-buttons { display:flex; justify-content:flex-end; gap:10px; margin-top:20px; }
+@media(max-width:650px){ .go-stock-fields{grid-template-columns:1fr;} .go-stock-admin-head{flex-direction:column;align-items:flex-start;} .go-stock-panel{padding:14px;} .go-stock-actions{flex-wrap:wrap;} }

@@ -2,54 +2,105 @@
 @rendermode InteractiveServer
 @attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles="ADMIN")]
 @using MudBlazor
-<PageTitle>Artículos en Stock · Milly K-Pop GO</PageTitle>
-<section class="pa-4">
-    <MudText Typo="Typo.h4" Class="mb-3">Artículos en Stock</MudText>
-    <MudButton Href="/admin" Variant="Variant.Text" Color="Color.Primary">Volver al panel</MudButton>
-    @if (Resultado is "agregado" or "asignado") { <MudAlert Severity="Severity.Success">Operación realizada correctamente.</MudAlert> }
-    @if (Resultado == "error") { <MudAlert Severity="Severity.Error">No se pudo realizar la operación. Verifica los datos y el stock disponible.</MudAlert> }
-    @if (Resultado == "datos") { <MudAlert Severity="Severity.Warning">Revisa los datos ingresados.</MudAlert> }
-    @if (Error is not null) { <MudAlert Severity="Severity.Error">@Error</MudAlert> }
-    else if (Loading) { <MudProgressLinear Indeterminate="true" /> }
+@using MillyKpopGo.Stock
+<PageTitle>Artículos en Stock · MILLY K-POP GO</PageTitle>
+<section class="go-stock-admin">
+    <div class="go-stock-admin-head">
+        <div><MudText Typo="Typo.h4">Artículos en Stock</MudText><p>Administra tus existencias y asigna artículos a compradoras.</p></div>
+        <MudButton Href="/admin" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small">Volver al panel</MudButton>
+    </div>
+    @if (Resultado is "agregado" or "asignado" or "eliminado")
+    { <MudAlert Severity="Severity.Success" Class="mb-3">Operación realizada correctamente.</MudAlert> }
+    @if (Resultado == "error")
+    { <MudAlert Severity="Severity.Error" Class="mb-3">La operación fue rechazada. Revisa el Stock y vuelve a intentarlo.</MudAlert> }
+    @if (Resultado == "datos")
+    { <MudAlert Severity="Severity.Warning" Class="mb-3">Revisa los datos ingresados.</MudAlert> }
+    @if (Error is not null)
+    { <MudAlert Severity="Severity.Error" Class="mb-3">@Error</MudAlert> }
+    else if (Loading)
+    { <MudProgressLinear Indeterminate="true" /> }
     else
     {
-        <MudPaper Class="pa-4 my-4" Elevation="0">
-            <MudText Typo="Typo.h6" Class="mb-2">Agregar artículo comprado por mí</MudText>
+        <MudPaper Elevation="0" Class="go-stock-panel">
+            <h3>Agregar artículo</h3>
             <form method="post" action="/admin/stock/agregar" data-enhance="false">
                 <AntiforgeryToken />
                 <div class="go-stock-fields">
-                    <label>Artículo <input name="nombre" required maxlength="250" /></label>
-                    <label>Cantidad <input name="cantidad" type="number" required min="1" max="9999" value="1" /></label>
-                    <label>Precio por unidad (MXN) <input name="precio" type="number" required min="0" step="0.01" value="0" /></label>
-                    <label>Nota (opcional) <input name="nota" maxlength="500" /></label>
+                    <label>Nombre<input name="nombre" maxlength="250" required /></label>
+                    <label>Cantidad<input type="number" name="cantidad" min="1" max="9999" value="1" required /></label>
+                    <label>Precio unitario MXN<input type="number" name="precio" step="0.01" min="0" value="0" required /></label>
+                    <label>Nota (opcional)<input name="nota" maxlength="500" /></label>
                 </div>
-                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="mt-3">Agregar a Stock</MudButton>
+                <div class="go-stock-end"><button class="go-stock-primary" type="submit">Agregar a Stock</button></div>
             </form>
         </MudPaper>
-        <MudPaper Class="pa-4" Elevation="0">
-            <MudText Typo="Typo.h6" Class="mb-3">Existencias</MudText>
-            @if (!Vista.Articulos.Any()) { <MudText>Aún no tienes artículos en Stock.</MudText> }
-            @foreach (var item in Vista.Articulos)
+        <MudPaper Elevation="0" Class="go-stock-panel">
+            <div class="go-stock-table-head"><h3>Existencias disponibles</h3><span>@Disponibles.Count() artículo(s)</span></div>
+            @if (!Disponibles.Any())
+            { <p>No tienes artículos disponibles en Stock.</p> }
+            else
             {
-                <div class="go-stock-row">
-                    <div><strong>@item.Nombre</strong><div>@Money(item.PrecioUnitario) · Disponibles: @item.CantidadDisponible</div><small>@(item.Origen == "CANCELACION" ? "Cancelación de pedido" : "Compra propia")</small></div>
-                    @if (item.CantidadDisponible > 0)
-                    {
-                        <form method="post" action="/admin/stock/asignar" data-enhance="false">
-                            <AntiforgeryToken />
-                            <input type="hidden" name="stock_id" value="@item.Id" />
-                            <label>Compradora
-                                <select name="comprador_id" required>
-                                    <option value="">Selecciona una compradora</option>
-                                    @foreach (var compradora in Vista.Compradores) { <option value="@compradora.Id">@compradora.Nombre</option> }
-                                </select>
-                            </label>
-                            <label>Cantidad <input name="cantidad" type="number" value="1" min="1" max="@item.CantidadDisponible" required /></label>
-                            <MudButton ButtonType="ButtonType.Submit" Size="Size.Small" Variant="Variant.Outlined" Color="Color.Primary">Asignar a compradora</MudButton>
-                        </form>
-                    }
+                <div class="go-stock-overflow">
+                    <table class="go-stock-table">
+                        <thead><tr><th>Artículo</th><th>Origen</th><th>Disponible</th><th>Precio</th><th>Acciones</th></tr></thead>
+                        <tbody>
+                            @foreach (var item in ArticulosPagina)
+                            {
+                                <tr>
+                                    <td><strong>@item.Nombre</strong>@if (!string.IsNullOrEmpty(item.Nota)) { <small>@item.Nota</small> }</td>
+                                    <td>@(item.Origen == "CANCELACION" ? "Cancelación" : "Compra propia")</td>
+                                    <td><span class="go-stock-count">@item.CantidadDisponible</span></td>
+                                    <td class="go-stock-price">@Money(item.PrecioUnitario)</td>
+                                    <td><div class="go-stock-actions">
+                                        <button type="button" @onclick="() => AbrirAsignar(item)">Asignar</button>
+                                        <button type="button" class="go-stock-danger" @onclick="() => AbrirEliminar(item)">Eliminar</button>
+                                    </div></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="go-stock-pager">
+                    <button type="button" disabled="@(Pagina == 0)" @onclick="() => MoverPagina(-1)">Anterior</button>
+                    <span>Página @(Pagina + 1) de @TotalPaginas</span>
+                    <button type="button" disabled="@(Pagina >= TotalPaginas - 1)" @onclick="() => MoverPagina(1)">Siguiente</button>
                 </div>
             }
         </MudPaper>
     }
 </section>
+@if (Dialogo is not null && Seleccionado is not null)
+{
+    <div class="go-stock-shade" @onclick="CerrarDialogo">
+        <div class="go-stock-modal" role="dialog" aria-modal="true" aria-label="Operación de Stock" @onclick:stopPropagation="true">
+            @if (Dialogo == "eliminar")
+            {
+                <h3>Eliminar artículo de Stock</h3>
+                <p>¿Retirar las <strong>@Seleccionado.CantidadDisponible unidades disponibles</strong> de <strong>@Seleccionado.Nombre</strong>?</p>
+                <p class="go-stock-warning">Las unidades ya asignadas a compradoras y el historial no se modifican.</p>
+                <form id="go-retirar-stock" method="post" action="/admin/stock/eliminar" data-enhance="false">
+                    <AntiforgeryToken /><input type="hidden" name="stock_id" value="@Seleccionado.Id" />
+                </form>
+                <div class="go-stock-modal-buttons">
+                    <button type="button" @onclick="CerrarDialogo">Cancelar</button>
+                    <button type="submit" class="go-stock-delete" form="go-retirar-stock">Sí, eliminar</button>
+                </div>
+            }
+            else
+            {
+                <h3>Asignar a compradora</h3><p><strong>@Seleccionado.Nombre</strong> · @Seleccionado.CantidadDisponible disponible(s)</p>
+                <form id="go-asignar-stock" method="post" action="/admin/stock/asignar" data-enhance="false">
+                    <AntiforgeryToken /><input type="hidden" name="stock_id" value="@Seleccionado.Id" />
+                    <label>Compradora<select name="comprador_id" required><option value="">Selecciona una compradora</option>
+                        @foreach (var c in Vista.Compradores) { <option value="@c.Id">@c.Nombre</option> }
+                    </select></label>
+                    <label>Cantidad<input name="cantidad" type="number" min="1" max="@Seleccionado.CantidadDisponible" value="1" required /></label>
+                </form>
+                <div class="go-stock-modal-buttons">
+                    <button type="button" @onclick="CerrarDialogo">Cancelar</button>
+                    <button type="submit" class="go-stock-primary" form="go-asignar-stock">Asignar</button>
+                </div>
+            }
+        </div>
+    </div>
+}
