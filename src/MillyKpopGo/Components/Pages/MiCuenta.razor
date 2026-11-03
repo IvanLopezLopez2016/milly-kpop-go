@@ -29,6 +29,27 @@
     .contenedor-padre {
         text-align: center;
     }
+
+    .go-btn-morado {
+        background-color: #7042A1 !important;
+        color: white !important;
+        border-radius: 12px;
+        padding: 10px 24px;
+        font-weight: 600;
+        text-transform: none;
+    }
+
+        .go-btn-morado:hover {
+            background-color: #583181 !important;
+            color: white !important;
+        }
+
+    .centrado-boton {
+        display: block;
+        width: fit-content;
+        margin-left: auto;
+        margin-right: auto;
+    }
     </style>
 <PageTitle>Mi cuenta · Milly K-Pop GO</PageTitle>
 <MudThemeProvider />
@@ -39,7 +60,7 @@
 
 <section class="go9-portal">
     <MudImage Fluid="true" Src="imagenes/millykpopbaner.jpeg" Width="500" Height="350" Alt="Milly K-POP" Class="rounded-lg centrado" />
-    <div class="go9-top"><div><MudText Typo="Typo.h4">Mi cuenta</MudText><MudText Color="Color.Primary">@Nombre </MudText><MudText Color="Color.Secondary">Mis compras y pagos</MudText></div><div class="go9-actions"><MudButton Href="/mi-cuenta" Color="Color.Primary" Variant="Variant.Outlined">Actualizar</MudButton></div></div>
+    <div class="go9-top"><div><MudText Typo="Typo.h4">Mi cuenta</MudText><MudText Color="Color.Primary">@Nombre </MudText><MudText Color="Color.Secondary">Mis compras y pagos</MudText></div><div class="go9-actions"><MudButton Href="/mi-cuenta" Color="Color.Primary" Class="mb-3 centrado-boton go-btn-morado" Variant="Variant.Outlined">Actualizar</MudButton></div></div>
     @if (Error is not null)
     {
         <MudAlert Severity="Severity.Error" Class="mb-4">@Error</MudAlert>
@@ -124,7 +145,7 @@
 
 </section>
 <div class="contenedor-padre">
-    <MudButton Href="/stock-disponible" Variant="Variant.Outlined" Color="Color.Primary" Class="mb-3 centrado-boton">Ver Stock disponible</MudButton>
+    <MudButton Href="/stock-disponible" Variant="Variant.Outlined" Color="Color.Primary" Class="mb-3 centrado-boton go-btn-morado">Ver Stock disponible</MudButton>
 </div>
 <div class="row">
     <div class="row-1">    
