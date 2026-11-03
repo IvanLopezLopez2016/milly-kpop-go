@@ -2,6 +2,7 @@
 @layout MillyKpopGo.Components.Layout.AuthLayout
 @using MudBlazor
 @using Microsoft.AspNetCore.Components.Forms
+@rendermode InteractiveServer
 
 <MudPaper Class="go-auth-card" Elevation="0">
     <div class="go-auth-heading">🌸 MILLY K-POP GO</div>
@@ -16,8 +17,29 @@
         <AntiforgeryToken />
         <label class="go-auth-label" for="go-email">Correo electrónico</label>
         <input id="go-email" class="go-auth-input" type="email" name="email" autocomplete="username" maxlength="320" required />
-        <label class="go-auth-label" for="go-password">Contraseña</label>
-        <input id="go-password" class="go-auth-input" type="password" name="password" autocomplete="current-password" required />
+        <label class="go-auth-label" for="go-password">
+    Contraseña
+</label>
+
+<div class="go-password-container">
+
+    <input id="go-password"
+           class="go-auth-input"
+           type="@(MostrarPassword ? "text" : "password")"
+           name="password"
+           autocomplete="current-password"
+           required />
+
+    <button type="button"
+            class="go-password-toggle"
+            @onclick="AlternarPassword"
+            aria-label="@(MostrarPassword ? "Ocultar contraseña" : "Mostrar contraseña")">
+
+        @(MostrarPassword ? "Ocultar" : "Mostrar")
+
+    </button>
+
+</div>
         <button class="go-auth-primary" type="submit">Iniciar sesión</button>
     </form>
     <p class="go-auth-bottom"><a href="/crear-cuenta">Crear mi cuenta</a></p>

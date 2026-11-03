@@ -10,3 +10,38 @@
 .go-auth-bottom a { color:#7042a1; font-weight:600; }
 .go-auth-error { background:#fff0f2; color:#a41e47; border:1px solid #f4bfcd; border-radius:9px; padding:12px; margin:14px 0; }
 @media (max-width:480px) { .go-auth-card { padding:23px 18px; } .go-auth-heading { font-size:21px; } }
+
+/* Contenedor de contraseña */
+.go-password-container {
+    position: relative;
+    width: 100%;
+}
+
+    /* Espacio para el botón */
+    .go-password-container .go-auth-input {
+        padding-right: 90px;
+    }
+
+/* Botón mostrar/ocultar */
+.go-password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: #7042A1;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 7px;
+}
+
+    .go-password-toggle:hover {
+        color: #583181;
+    }
+
+    .go-password-toggle:focus-visible {
+        outline: 2px solid #7042A1;
+        border-radius: 6px;
+    }

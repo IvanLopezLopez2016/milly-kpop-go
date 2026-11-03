@@ -8,4 +8,11 @@ public partial class Login
     public string? Error { get; set; }
 
     protected bool MostrarError => Error is not null;
+
+    protected bool MostrarPassword { get; set; } = false;
+
+    protected void AlternarPassword()
+    {
+        MostrarPassword = !MostrarPassword;
+    }
 }
