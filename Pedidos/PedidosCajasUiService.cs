@@ -38,6 +38,18 @@ public sealed class PedidosCajasUiService(IHttpClientFactory factory, IConfigura
         data.Detalles = await Read<PcDetail>(http,"pedido_detalles?select=id,pedido_id,articulo_id,caja_id,cantidad,precio_unitario,estado&limit=1000");
         return data;
     }
+    /// <summary>Cancela/elimina un detalle de pedido vía RPC. Devuelve el estado reportado por Supabase
+    /// (REQUIERE_CONFIRMACION, STOCK, ELIMINADO, YA_CANCELADO) o "ERROR" si la operación falló.</summary>
+    public async Task<string> CancelarDetalleAsync(Guid pedidoId, Guid detalleId, bool aceptarMovimientos, HttpContext context, CancellationToken ct = default)
+    {
+        using var http = await ClientAsync(context);
+        using var r = await http.PostAsJsonAsync("rpc/cancelar_detalle_go",
+            new { p_pedido_id = pedidoId, p_detalle_id = detalleId, p_aceptar_movimientos = aceptarMovimientos }, Json, ct);
+        if (!r.IsSuccessStatusCode) return "ERROR";
+        var status = JsonSerializer.Deserialize<string>(await r.Content.ReadAsStringAsync(ct), Json);
+        return status ?? "ERROR";
+    }
+
     public async Task<PedidosCajasView> ReadBoxesAsync(HttpContext context)
     {
         using var http = await ClientAsync(context);

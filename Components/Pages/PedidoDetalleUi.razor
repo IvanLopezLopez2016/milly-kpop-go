@@ -9,22 +9,6 @@
 <MudDialogProvider />
 <MudSnackbarProvider />
 <section class="go84">
-    @if (Eliminacion == "ok")
-    {
-        <MudAlert Severity="Severity.Success">Articulo eliminado. El total del pedido se actualizÃ³.</MudAlert>
-    }
-    @if (Eliminacion == "movimientos")
-    {
-        <MudAlert Severity="Severity.Warning">No se puede eliminar este artiiculo: ya tiene cargos o pagos aplicados.</MudAlert>
-    }
-    @if (Eliminacion == "noencontrado")
-    {
-        <MudAlert Severity="Severity.Warning">El arti­culo ya no existe en este pedido.</MudAlert>
-    }
-    @if (Eliminacion == "error")
-    {
-        <MudAlert Severity="Severity.Error">No se pudo eliminar el articulo. Verifica que ejecutaste el SQL de la entrega y que tu sesion siga activa.</MudAlert>
-    }
     <MudButton Href="/admin/pedidos" Variant="Variant.Text">Volver a pedidos</MudButton><MudText Typo="Typo.h4" Class="mb-3">Detalle del pedido</MudText>
     @if (Error is not null)
     {
@@ -70,13 +54,16 @@
             }
         </DialogContent>
         <DialogActions>
-            <MudButton OnClick="@(() => ConfirmarVisible = false)" Variant="Variant.Text">Cancelar</MudButton>
+            <MudButton OnClick="@(() => ConfirmarVisible = false)" Variant="Variant.Text" Disabled="Procesando">Cancelar</MudButton>
             @if (ParaEliminar is not null)
             {
-                <form method="post" action="@($"/admin/pedidos/{Id:D}/articulos/{ParaEliminar.Id:D}/eliminar")" data-enhance="false">
-                    <AntiforgeryToken />
-                    <MudButton ButtonType="ButtonType.Submit" Color="Color.Error" Variant="Variant.Filled">Confirmar</MudButton>
-                </form>
+                <MudButton OnClick="Confirmar" Color="Color.Error" Variant="Variant.Filled" Disabled="Procesando">
+                    @if (Procesando)
+                    {
+                        <MudProgressCircular Class="mr-2" Size="Size.Small" Indeterminate="true" />
+                    }
+                    Confirmar
+                </MudButton>
             }
         </DialogActions>
     </MudDialog>
@@ -87,27 +74,17 @@
             <MudText>Los abonos quedan retenidos en el historial de este arti­culo, no se devuelven ni se aplican a otros.</MudText>
         </DialogContent>
         <DialogActions>
-            <MudButton OnClick="@(() => AvisoVisible = false)" Variant="Variant.Text">Aceptar</MudButton>
+            <MudButton OnClick="@(() => AvisoVisible = false)" Variant="Variant.Text" Disabled="Procesando">Aceptar</MudButton>
             @if (DetalleMovimiento != Guid.Empty && ArticuloConMovimiento is not null)
             {
-                <form method="post" action="@($"/admin/pedidos/{Id:D}/articulos/{DetalleMovimiento:D}/eliminar")" data-enhance="false">
-                    <AntiforgeryToken />
-                    <input type="hidden" name="aceptar_movimientos" value="true" />
-                    <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled">@(ArticuloConMovimiento.Estado == "PEDIDO" ? "Pasar a Stock" : "Eliminar sin Stock")</MudButton>
-                </form>
+                <MudButton OnClick="ConfirmarConMovimientos" Color="Color.Primary" Variant="Variant.Filled" Disabled="Procesando">
+                    @if (Procesando)
+                    {
+                        <MudProgressCircular Class="mr-2" Size="Size.Small" Indeterminate="true" />
+                    }
+                    @(ArticuloConMovimiento.Estado == "PEDIDO" ? "Pasar a Stock" : "Eliminar sin Stock")
+                </MudButton>
             }
         </DialogActions>
     </MudDialog>
-    @if (Eliminacion == "stock")
-    {
-        <MudAlert Severity="Severity.Success">Articulo retirado del pedido y enviado a Stock.</MudAlert>
-    }
-    @if (Eliminacion == "ok")
-    {
-        <MudAlert Severity="Severity.Success">Articulo eliminado del pedido.</MudAlert>
-    }
-    @if (Eliminacion == "error")
-    {
-        <MudAlert Severity="Severity.Error">No se pudo realizar la operacion. Verifica el estado del arti­culo.</MudAlert>
-    }
 </div>
