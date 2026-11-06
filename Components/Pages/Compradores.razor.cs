@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using MillyKpopGo.Catalogos;
+using MillyKpopGo.Acceso;
 
 namespace MillyKpopGo.Components.Pages;
 
@@ -13,6 +14,8 @@ public partial class Compradores : ComponentBase, IDisposable
     [Inject] private IAntiforgery Anti { get; set; } = default!;
     [Inject] private PersistentComponentState State { get; set; } = default!;
     [Inject] private ISnackbar Snackbar { get; set; } = default!;
+    [Inject] private IDialogService Dialogs { get; set; } = default!;
+    [Inject] private CodigosAccesoService Codigos { get; set; } = default!;
     private PersistingComponentStateSubscription _subscription;
     private bool _notificado;
     protected List<CompradorUi> Registros { get; set; } = [];
@@ -46,5 +49,15 @@ public partial class Compradores : ComponentBase, IDisposable
             Snackbar.Add(Aviso == "creado" ? "Registro creado correctamente." : Aviso == "editado" ? "Cambios guardados correctamente." : "Estado actualizado correctamente.", Severity.Success);
         }
     }
+    protected async Task AbrirRestablecer(CompradorUi comprador)
+    {
+        var parametros = new DialogParameters<RestablecerContrasenaDialog>
+        {
+            { x => x.Comprador, comprador }
+        };
+        var opciones = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, CloseButton = true };
+        await Dialogs.ShowAsync<RestablecerContrasenaDialog>("Restablecer contraseña", parametros, opciones);
+    }
+
     public void Dispose() => _subscription.Dispose();
 }

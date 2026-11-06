@@ -7,9 +7,23 @@
         <!-- HEADER -->
     <header class="go-header">
 
-        <a href="/" class="go-header-brand">
-            🌸 MILLY K-POP GO
-        </a>
+        <AuthorizeView Roles="ADMIN">
+            <Authorized>
+                <a href="/admin" class="go-header-brand">🌸 MILLY K-POP GO</a>
+            </Authorized>
+        </AuthorizeView>
+
+        <AuthorizeView Roles="CLIENTE">
+            <Authorized>
+                <a href="/mi-cuenta" class="go-header-brand">🌸 MILLY K-POP GO</a>
+            </Authorized>
+        </AuthorizeView>
+
+        <AuthorizeView>
+            <NotAuthorized>
+                <a href="/login" class="go-header-brand">🌸 MILLY K-POP GO</a>
+            </NotAuthorized>
+        </AuthorizeView>
 
         <div class="go-header-actions">
 

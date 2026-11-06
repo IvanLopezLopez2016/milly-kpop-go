@@ -34,6 +34,48 @@ public sealed class CodigosAccesoService(IHttpClientFactory clients, IConfigurat
     }
     public static string Hash(string code) => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(Normalize(code)))).ToLowerInvariant();
     private static string Normalize(string s) => new string(s.Where(char.IsLetterOrDigit).ToArray()).ToUpperInvariant();
+    private const string PasswordAlphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
+
+    /// <summary>Genera una clave de 12 caracteres (solo minúsculas y números) con un generador criptográficamente seguro.</summary>
+    public static string GenerarClave() =>
+        RandomNumberGenerator.GetString(PasswordAlphabet, 12);
+
+    /// <summary>Restablece la contraseña del usuario Auth vinculado a la compradora usando la Admin API de Supabase.</summary>
+    public async Task<(bool Ok,string Message)> RestablecerContrasenaAsync(Guid compradorId,string password,CancellationToken ct)
+    {
+        if(string.IsNullOrWhiteSpace(password)||password.Length is <12 or >128)
+            return(false,"La contraseña debe tener entre 12 y 128 caracteres.");
+
+        Guid authUserId;
+        using (var db=Database())
+        {
+            using var get=await db.GetAsync($"compradores?select=id,activo,auth_user_id&id=eq.{compradorId:D}&limit=1",ct);
+            if(!get.IsSuccessStatusCode)return(false,"No se pudo consultar la compradora.");
+            using var json=JsonDocument.Parse(await get.Content.ReadAsStringAsync(ct));
+            if(json.RootElement.GetArrayLength()!=1)return(false,"Compradora no encontrada.");
+            var buyer=json.RootElement[0];
+            if(!buyer.GetProperty("activo").GetBoolean())return(false,"La compradora está inactiva.");
+            if(buyer.GetProperty("auth_user_id").ValueKind==JsonValueKind.Null)
+                return(false,"Esta compradora todavía no tiene una cuenta vinculada.");
+            authUserId=buyer.GetProperty("auth_user_id").GetGuid();
+        }
+
+        using (var auth=AuthAdmin())
+        {
+            using var req=new HttpRequestMessage(HttpMethod.Put,$"admin/users/{authUserId:D}")
+            {
+                Content=JsonContent.Create(new { password },options:Opt)
+            };
+            using var resp=await auth.SendAsync(req,ct);
+            if(!resp.IsSuccessStatusCode)
+            {
+                log.LogWarning("Restablecer contraseña falló para comprador {Id}: HTTP {Code}",compradorId,(int)resp.StatusCode);
+                return(false,"No fue posible restablecer la contraseña en Supabase.");
+            }
+        }
+        return(true,"Contraseña restablecida. Se muestra una sola vez. Compártela de forma privada por WhatsApp.");
+    }
+
     public async Task<(bool Ok,string Message,string? Code)> GenerarAsync(Guid id,CancellationToken ct)
     {
         using var db=Database();
